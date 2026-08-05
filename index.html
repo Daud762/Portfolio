@@ -17,6 +17,9 @@
 
 <!-- Bootstrap 5 -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <style>
     /* =========================================================
@@ -25,21 +28,6 @@
    Colors:  --rust #B73500 | --white #FFFFFF | --black #000000
    Type:    Black Ops One (display) / Ubuntu (body)
    ========================================================= */
-
-/* --- LIGHT MODE VARIABLES --- */
-[data-theme="light"] {
-  --ink: #f5f0ed;
-  --ink-2: #ece7e4;
-  --ink-3: #e3dedb;
-  --white: #1a1614;
-  --black: #f5f0ed;
-  --mist: rgba(26,22,20,0.72);
-  --mist-dim: rgba(26,22,20,0.46);
-  --glass: rgba(0,0,0,0.04);
-  --glass-border: rgba(0,0,0,0.10);
-  --steel: #d5cfca;
-  --preloader-bg: #f5f0ed;
-}
 
 :root{
   --rust: #B73500;
@@ -55,6 +43,8 @@
   --mist-dim: rgba(255,255,255,0.46);
   --glass: rgba(255,255,255,0.04);
   --glass-border: rgba(255,255,255,0.10);
+  --glass-strong: rgba(255,255,255,0.07);
+  --glass-strong-border: rgba(255,255,255,0.14);
   --preloader-bg: #0A0908;
 
   --font-display: 'Black Ops One', 'Arial Narrow', sans-serif;
@@ -63,6 +53,26 @@
   --section-pad: 160px;
   --container-pad: clamp(24px, 6vw, 100px);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- LIGHT MODE VARIABLES --- */
+/* NOTE: this block must be declared AFTER :root in source order so that
+   equal-specificity custom properties correctly override the dark defaults
+   when [data-theme="light"] is set on <html>. */
+[data-theme="light"] {
+  --ink: #f5f0ed;
+  --ink-2: #ece7e4;
+  --ink-3: #e3dedb;
+  --white: #1a1614;
+  --black: #f5f0ed;
+  --mist: rgba(26,22,20,0.72);
+  --mist-dim: rgba(26,22,20,0.46);
+  --glass: rgba(0,0,0,0.04);
+  --glass-border: rgba(0,0,0,0.10);
+  --glass-strong: rgba(0,0,0,0.06);
+  --glass-strong-border: rgba(0,0,0,0.14);
+  --steel: #d5cfca;
+  --preloader-bg: #f5f0ed;
 }
 
 *{ box-sizing: border-box; }
@@ -157,7 +167,7 @@ img{ max-width: 100%; display:block; }
   font-size: 0.75rem;
   color: var(--mist-dim);
   letter-spacing: 0.1em;
-  background: rgba(255,255,255,0.03);
+  background: var(--glass);
   padding: 14px 20px;
   border-radius: 8px;
   border: 1px solid var(--glass-border);
@@ -169,7 +179,7 @@ img{ max-width: 100%; display:block; }
   justify-content: center;
   gap: 6px;
   flex-wrap: wrap;
-  transition: border-color 0.5s ease, color 0.5s ease;
+  transition: border-color 0.5s ease, color 0.5s ease, background 0.5s ease;
 }
 
 .preloader-code .code-char{
@@ -202,7 +212,7 @@ img{ max-width: 100%; display:block; }
 .preloader-bar{
   width: 100%;
   height: 3px;
-  background: rgba(255,255,255,0.08);
+  background: var(--glass-strong);
   position: relative;
   overflow: hidden;
   border-radius: 3px;
@@ -276,7 +286,7 @@ img{ max-width: 100%; display:block; }
   box-shadow: 0 0 10px var(--rust-bright);
 }
 .cursor-ring{
-  width:38px; height:38px; border:1px solid rgba(255,255,255,0.35);
+  width:38px; height:38px; border:1px solid var(--glass-strong-border);
   transition: width .25s var(--ease-out), height .25s var(--ease-out), border-color .25s ease, background .25s ease;
 }
 .cursor-ring.is-active{
@@ -370,6 +380,7 @@ img{ max-width: 100%; display:block; }
 }
 .theme-toggle .icon{
   font-size: 1rem;
+  color: var(--rust-bright);
 }
 
 .nav-toggle{
@@ -377,24 +388,19 @@ img{ max-width: 100%; display:block; }
   background:none; border:none; cursor:pointer; padding: 8px;
 }
 .nav-toggle span{ width: 24px; height:2px; background: var(--white); transition: background 0.4s ease; }
-[data-theme="light"] .nav-toggle span{ background: var(--white); }
 
 @media (max-width: 900px){
   .nav-toggle{ display:flex; z-index: 600; }
   .nav-links{
     position: fixed; inset: 0; z-index: 590;
     flex-direction: column; justify-content:center;
-    background: rgba(10,9,8,0.98);
+    background: var(--ink);
     transform: translateX(100%);
-    transition: transform .5s var(--ease-out);
+    transition: transform .5s var(--ease-out), background 0.5s ease;
   }
   .nav-links.is-open{ transform: translateX(0); }
   .nav-link{ font-size: 1.1rem; }
   .theme-toggle{ display: none; }
-}
-
-[data-theme="light"] .nav-links{
-  background: rgba(245,240,237,0.98);
 }
 
 /* =========================================================
@@ -410,7 +416,7 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   margin-bottom: 18px;
 }
 .section-title{
-  font-size: clamp(2rem, 4.4vw, 3.6rem);
+  font-size: clamp(2rem, 4.4vw, 3.3rem);
   line-height: 1.12;
   margin-bottom: 28px;
 }
@@ -418,18 +424,41 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 .reveal-up, .reveal-line{ opacity: 1; }
 
 /* =========================================================
-   ENHANCED HERO — LEFT ALIGNED WITH PREMIUM VISUAL
+   HERO — "THE WORKBENCH"
+   A pinned cinematic scroll-story: a developer's live workspace
+   powering on, compiling, and rendering as you scroll.
    ========================================================= */
 .hero{
   min-height: 100svh;
-  display:flex;
-  align-items:center;
+  padding: 0;
+  overflow: visible;
+  position: relative;
+}
+.hero-pin-wrap{
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
   padding-top: 120px;
   padding-bottom: 60px;
   overflow: hidden;
   position: relative;
 }
+
+/* ---------- Background layers ---------- */
 .hero-bg{ position:absolute; inset:0; z-index:0; }
+
+.hero-bg-gradient{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 22% 30%, rgba(183,53,0,0.16), transparent 65%),
+    linear-gradient(175deg, var(--ink) 0%, var(--ink-2) 55%, var(--ink) 100%);
+}
+
+.hero-noise{
+  position:absolute; inset:0; opacity: 0.05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 .forge-grid{
   position:absolute; inset:0;
   background-image:
@@ -439,15 +468,31 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 40%, transparent 90%);
   transition: opacity 0.5s ease;
 }
-[data-theme="light"] .forge-grid{
-  opacity: 0.3;
+[data-theme="light"] .forge-grid{ opacity: 0.3; }
+
+.hero-rays{
+  position:absolute; inset:-10% -10% auto -10%; height:120%;
+  background: conic-gradient(from 200deg at 30% 20%, rgba(232,72,15,0.10), transparent 18%, transparent 82%, rgba(232,72,15,0.07));
+  opacity: 0.6;
+  pointer-events:none;
 }
+
+.hero-blob{
+  position:absolute; border-radius:50%; filter: blur(60px);
+  background: radial-gradient(circle, rgba(183,53,0,0.30), transparent 70%);
+  pointer-events:none;
+}
+.hero-blob-1{ width:520px; height:520px; top:-8%; left:-6%; }
+.hero-blob-2{ width:380px; height:380px; bottom:-12%; right:-4%; background: radial-gradient(circle, rgba(232,72,15,0.18), transparent 70%); }
+
 .hero-glow{
-  position:absolute; left:30%; top:38%; width: 900px; height:900px;
+  position:absolute; left:32%; top:42%; width: 900px; height:900px;
   transform: translate(-50%,-50%);
-  background: radial-gradient(circle, rgba(183,53,0,0.25) 0%, rgba(183,53,0,0.06) 45%, transparent 70%);
+  background: radial-gradient(circle, rgba(183,53,0,0.22) 0%, rgba(183,53,0,0.05) 45%, transparent 70%);
   filter: blur(10px);
+  opacity: 0.5;
 }
+
 .ember-field{ position:absolute; inset:0; overflow:hidden; }
 .ember{
   position:absolute; bottom:-10px; width:3px; height:3px; border-radius:50%;
@@ -456,7 +501,9 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   opacity: 0.8;
 }
 
-/* Hero Content - Left Aligned */
+/* ---------- Content (left) ---------- */
+.hero-inner{ position:relative; z-index:3; width:100%; }
+
 .hero-content{
   position:relative; z-index:2;
   text-align: left;
@@ -477,13 +524,8 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   line-height: 0.92;
   color: var(--white);
 }
-.hero-title .line{
-  display:block; overflow:hidden;
-}
-.hero-title .char{
-  display:inline-block;
-  text-shadow: 0 0 40px rgba(183,53,0,0.0);
-}
+.hero-title .line{ display:block; overflow:hidden; }
+.hero-title .char{ display:inline-block; text-shadow: 0 0 40px rgba(183,53,0,0.0); }
 
 .hero-sub{
   max-width: 580px;
@@ -507,7 +549,7 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   bottom: 42px;
   left: 50%;
   transform: translateX(-50%);
-  z-index:2;
+  z-index:4;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -526,186 +568,267 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   color: var(--mist-dim);
 }
 
-/* =========================================================
-   PREMIUM HERO VISUAL — 3D TECH SHOWCASE
-   ========================================================= */
+/* ---------- Dev workbench scene (right) ---------- */
 .hero-visual{
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 2;
-  min-height: 500px;
+  min-height: 520px;
 }
 
-.premium-showcase{
+.dev-scene{
   position: relative;
   width: 100%;
-  max-width: 520px;
-  aspect-ratio: 1/1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Glass Card Background */
-.showcase-glass{
-  position: absolute;
-  inset: 0;
-  border-radius: 30px;
-  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
-  border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(20px);
-  box-shadow: 
-    0 0 80px rgba(183,53,0,0.06),
-    inset 0 0 80px rgba(183,53,0,0.02);
-  animation: showcasePulse 4s ease-in-out infinite;
-  transition: border-color 0.5s ease, background 0.5s ease;
-}
-[data-theme="light"] .showcase-glass{
-  background: radial-gradient(circle at 30% 20%, rgba(0,0,0,0.04), rgba(0,0,0,0.01));
-  border-color: rgba(0,0,0,0.08);
-}
-
-@keyframes showcasePulse {
-  0%, 100% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.02); opacity: 1; }
-}
-
-/* Tech Cube */
-.tech-cube-wrapper{
-  position: relative;
-  width: 60%;
-  height: 60%;
-  perspective: 800px;
-}
-
-.tech-cube{
-  position: relative;
-  width: 100%;
-  height: 100%;
+  max-width: 560px;
+  aspect-ratio: 1/0.92;
   transform-style: preserve-3d;
-  animation: cubeRotate 15s linear infinite;
 }
 
-@keyframes cubeRotate {
-  0% { transform: rotateX(-20deg) rotateY(0deg); }
-  100% { transform: rotateX(-20deg) rotateY(360deg); }
+.dev-connections{
+  position:absolute; inset:0; width:100%; height:100%;
+  overflow: visible;
+  pointer-events:none;
+  z-index: 5;
+}
+.dev-connections path{
+  fill:none; stroke: var(--rust-bright); stroke-width:1.4;
+  stroke-dasharray: 6 500; opacity: 0;
+  filter: drop-shadow(0 0 5px rgba(232,72,15,0.65));
 }
 
-.cube-face{
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 16px;
-  background: rgba(232,72,15,0.08);
-  border: 1px solid rgba(232,72,15,0.15);
-  backdrop-filter: blur(5px);
+/* Monitor (code editor) */
+.dev-monitor{
+  position:absolute;
+  top: 4%; left: 4%;
+  width: 62%;
+  border-radius: 14px;
+  background: linear-gradient(160deg, var(--glass-strong), var(--glass));
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.55), 0 0 0px rgba(232,72,15,0);
+  overflow: hidden;
+  z-index: 3;
+  opacity: 0;
+  transform: translateY(26px) scale(0.96);
+  transition: background 0.5s ease, border-color 0.5s ease;
+}
+.dev-monitor-bar{
+  display:flex; align-items:center; gap:7px;
+  padding: 11px 14px;
+  background: var(--glass);
+  border-bottom: 1px solid var(--glass-border);
+  transition: background 0.5s ease, border-color 0.5s ease;
+}
+.dev-dot{ width:9px; height:9px; border-radius:50%; }
+.dev-dot-r{ background:#ff5f57; }
+.dev-dot-y{ background:#febc2e; }
+.dev-dot-g{ background:#28c840; }
+.dev-file-tab{
+  margin-left: 12px;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: var(--mist-dim);
+  font-family: 'Courier New', monospace;
+}
+.dev-monitor-body{
+  padding: 16px 18px 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  line-height: 1.85;
+}
+.dev-code-line{ display:flex; gap: 10px; white-space:nowrap; }
+.dev-code-line .ln{ color: var(--mist-dim); opacity: 0.5; width:16px; text-align:right; flex-shrink:0; }
+.dev-code-line .code{ opacity: 0; transform: translateX(-6px); overflow:hidden; }
+.tok-tag{ color:#ff8a65; } .tok-attr{ color:#ffd93d; } .tok-str{ color:#6bcb77; }
+.tok-kw{ color:#c792ea; } .tok-fn{ color:#82aaff; } .tok-punc{ color: var(--mist-dim); }
+.tok-comment{ color: rgba(255,255,255,0.28); font-style:italic; }
+.dev-cursor-blink{
+  display:inline-block; width:6px; height:1em; background: var(--rust-bright);
+  vertical-align:middle; margin-left:2px; animation: cursorBlink 1s step-end infinite;
+}
+
+/* Compiling strip */
+.dev-compile-strip{
+  display:flex; align-items:center; gap:8px;
+  padding: 9px 18px;
+  border-top: 1px solid var(--glass-border);
+  background: rgba(232,72,15,0.05);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--mist-dim);
+  opacity: 0;
+  transition: border-color 0.5s ease;
+}
+.dev-compile-strip .compile-dot{
+  width:6px; height:6px; border-radius:50%; background: var(--rust-bright);
+  box-shadow: 0 0 8px var(--rust-bright);
+  animation: statusPulse 1.4s ease-in-out infinite;
+}
+
+/* Laptop (browser preview) */
+.dev-laptop{
+  position:absolute;
+  bottom: 2%; right: 2%;
+  width: 58%;
+  border-radius: 12px;
+  background: linear-gradient(160deg, var(--glass-strong), var(--glass));
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.55);
+  overflow: hidden;
+  z-index: 4;
+  opacity: 0;
+  transform: translateY(40px) translateX(24px) scale(0.94);
+  transition: background 0.5s ease, border-color 0.5s ease;
+}
+.dev-browser-bar{
+  display:flex; align-items:center; gap:8px;
+  padding: 9px 14px;
+  background: var(--glass);
+  border-bottom: 1px solid var(--glass-border);
+  transition: background 0.5s ease, border-color 0.5s ease;
+}
+.dev-browser-url{
+  flex:1;
+  font-size: 0.62rem;
+  color: var(--mist-dim);
+  background: var(--glass-strong);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-family: 'Courier New', monospace;
+  overflow:hidden;
+  white-space:nowrap;
+  transition: background 0.5s ease;
+}
+.dev-browser-body{
+  aspect-ratio: 16/10;
+  padding: 14px;
+  display:flex; flex-direction:column; gap:9px;
+  position: relative;
+}
+.dev-render-block{
+  border-radius: 6px;
+  background: linear-gradient(100deg, rgba(232,72,15,0.14), var(--glass-strong));
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.dev-render-block.b1{ height:14px; width:55%; }
+.dev-render-block.b2{ height:8px; width:80%; }
+.dev-render-block.b3{ height:8px; width:65%; }
+.dev-render-block.b4{ height:34px; width:100%; margin-top:6px; background: linear-gradient(120deg, rgba(232,72,15,0.22), rgba(183,53,0,0.08)); }
+.dev-render-block.b5{ height:8px; width:40%; }
+
+/* Mobile preview — real product UI content */
+.dev-mobile{
+  position:absolute;
+  top: 30%; left: 62%;
+  width: 22%;
+  aspect-ratio: 9/18.5;
+  border-radius: 20px;
+  background: linear-gradient(170deg, var(--glass-strong), var(--glass));
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+  overflow: hidden;
+  z-index: 6;
+  opacity: 0;
+  transform: translateY(30px) scale(0.85);
+  padding: 8px 6px;
+  transition: background 0.5s ease, border-color 0.5s ease;
+}
+.dev-mobile-notch{
+  width: 34%; height: 5px; border-radius: 4px;
+  background: var(--glass-strong-border); margin: 0 auto 7px;
+}
+.dev-mobile-body{ display:flex; flex-direction:column; gap:6px; padding: 0 2px; }
+.dev-mobile-app-name{
+  font-family: var(--font-display);
+  font-size: 0.42rem;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+.dev-mobile-app-tag{
+  font-size: 0.3rem;
+  letter-spacing: 0.04em;
+  color: var(--mist-dim);
+  margin-bottom: 6px;
+}
+.dev-mobile-stat-card{
+  border-radius: 6px;
+  background: linear-gradient(120deg, rgba(232,72,15,0.24), rgba(183,53,0,0.09));
+  border: 1px solid rgba(232,72,15,0.25);
+  padding: 6px 7px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  font-family: var(--font-display);
-  color: var(--rust-bright);
-  text-shadow: 0 0 30px rgba(232,72,15,0.3);
-  box-shadow: inset 0 0 40px rgba(232,72,15,0.05);
+  gap: 5px;
+  margin-bottom: 5px;
 }
-
-.cube-face-front { transform: translateZ(60px); }
-.cube-face-back { transform: rotateY(180deg) translateZ(60px); }
-.cube-face-right { transform: rotateY(90deg) translateZ(60px); }
-.cube-face-left { transform: rotateY(-90deg) translateZ(60px); }
-.cube-face-top { transform: rotateX(90deg) translateZ(60px); }
-.cube-face-bottom { transform: rotateX(-90deg) translateZ(60px); }
-
-/* Tech Icon on cube faces */
-.cube-face .tech-icon{
-  font-size: 2.8rem;
-  animation: iconFloat 3s ease-in-out infinite;
+.dev-mobile-stat-card i{ font-size: 0.5rem; color: var(--rust-bright); }
+.dev-mobile-stat-card .stat-txt{ display:flex; flex-direction:column; gap:1px; }
+.dev-mobile-stat-card .stat-num{ font-size: 0.42rem; font-weight:700; color: var(--white); font-family: var(--font-display); }
+.dev-mobile-stat-card .stat-label{ font-size: 0.26rem; letter-spacing:0.03em; color: var(--mist-dim); text-transform:uppercase; }
+.dev-mobile-row{ display:flex; gap:5px; margin-bottom:5px; }
+.dev-mobile-mini{
+  flex:1; border-radius: 5px; background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  padding: 5px 6px;
+  display:flex; flex-direction:column; align-items:flex-start; gap:2px;
 }
-
-.cube-face:nth-child(1) .tech-icon { animation-delay: 0s; }
-.cube-face:nth-child(2) .tech-icon { animation-delay: 0.5s; }
-.cube-face:nth-child(3) .tech-icon { animation-delay: 1s; }
-.cube-face:nth-child(4) .tech-icon { animation-delay: 1.5s; }
-.cube-face:nth-child(5) .tech-icon { animation-delay: 2s; }
-.cube-face:nth-child(6) .tech-icon { animation-delay: 2.5s; }
-
-@keyframes iconFloat {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-8px) scale(1.05); }
+.dev-mobile-mini i{ font-size: 0.42rem; color: var(--rust-bright); }
+.dev-mobile-mini span{ font-size: 0.26rem; color: var(--mist-dim); letter-spacing:0.02em; }
+.dev-mobile-chart{
+  height: 22px; border-radius: 5px; margin-top: 2px;
+  background: linear-gradient(120deg, rgba(232,72,15,0.22), rgba(183,53,0,0.08));
+  border: 1px solid rgba(232,72,15,0.2);
+  display:flex; align-items:flex-end; gap:2px; padding:3px 4px;
 }
+.dev-mobile-chart span{
+  flex:1; background: var(--rust-bright); border-radius: 1px; opacity:0.85;
+}
+.dev-mobile-nav{
+  display:flex; justify-content:space-around; align-items:center;
+  margin-top: 6px; padding-top: 5px; border-top: 1px solid var(--glass-border);
+}
+.dev-mobile-nav i{ font-size: 0.5rem; color: var(--mist-dim); }
+.dev-mobile-nav i.active{ color: var(--rust-bright); }
 
-/* Floating Tech Badges */
-.showcase-badge{
-  position: absolute;
-  padding: 10px 20px;
+/* Floating tech labels */
+.tech-float{
+  position:absolute;
+  padding: 7px 15px;
   border-radius: 30px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(15px);
-  font-size: 0.7rem;
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-strong-border);
+  backdrop-filter: blur(12px);
+  font-size: 0.66rem;
   font-weight: 500;
   letter-spacing: 0.06em;
   color: var(--mist);
   white-space: nowrap;
-  animation: badgeGlide 6s ease-in-out infinite;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-  transition: border-color 0.5s ease, background 0.5s ease, color 0.5s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  opacity: 0;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.4s ease, background 0.4s ease, color 0.4s ease;
 }
-[data-theme="light"] .showcase-badge{
-  background: rgba(0,0,0,0.04);
-  border-color: rgba(0,0,0,0.08);
-  color: var(--mist);
-}
+.tech-float i{ margin-right: 7px; color: var(--rust-bright); font-size: 0.72rem; }
+.tf-html{ top: 2%; right: 24%; }
+.tf-css{ top: 46%; left: -6%; }
+.tf-bootstrap{ bottom: 24%; left: 40%; }
+.tf-js{ top: 16%; left: -10%; }
+.tf-gsap{ bottom: -2%; right: 30%; }
+.tf-three{ top: 60%; right: -8%; }
+.tf-php{ bottom: 8%; right: -6%; }
 
-.showcase-badge .badge-dot{
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  margin-right: 8px;
-  animation: dotPulse 2s ease-in-out infinite;
-}
-
-@keyframes dotPulse {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.3); }
-}
-
-.showcase-badge:nth-child(1) { 
-  top: 5%; right: 5%; 
-  animation-delay: 0s;
-  border-color: rgba(232,72,15,0.3);
-}
-.showcase-badge:nth-child(2) { 
-  bottom: 8%; left: 3%; 
-  animation-delay: 1.5s;
-  border-color: rgba(97,218,251,0.3);
-}
-.showcase-badge:nth-child(3) { 
-  top: 25%; left: -5%; 
-  animation-delay: 3s;
-  border-color: rgba(255,215,0,0.3);
-}
-.showcase-badge:nth-child(4) { 
-  bottom: 30%; right: -3%; 
-  animation-delay: 4.5s;
-  border-color: rgba(255,107,107,0.3);
-}
-
-@keyframes badgeGlide {
-  0%, 100% { transform: translateY(0px) scale(1); opacity: 0.8; }
-  50% { transform: translateY(-15px) scale(1.05); opacity: 1; }
-}
-
-/* Status Indicator */
+/* Status + stats */
 .status-indicator{
   position: absolute;
-  bottom: 12%;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: -4%;
+  left: 4%;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -714,67 +837,36 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   background: rgba(0,0,0,0.6);
   border: 1px solid rgba(232,72,15,0.2);
   backdrop-filter: blur(10px);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   letter-spacing: 0.05em;
   color: var(--mist-dim);
-  z-index: 3;
+  z-index: 8;
+  opacity: 0;
   transition: background 0.5s ease, color 0.5s ease;
 }
-[data-theme="light"] .status-indicator{
-  background: rgba(255,255,255,0.8);
-  color: var(--mist);
-}
-
+[data-theme="light"] .status-indicator{ background: rgba(255,255,255,0.8); color: var(--mist); }
 .status-dot{
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #00ff88;
-  animation: statusPulse 2s ease-in-out infinite;
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: #00ff88; animation: statusPulse 2s ease-in-out infinite;
   box-shadow: 0 0 15px rgba(0,255,136,0.3);
 }
+.status-indicator strong{ color: var(--white); font-weight: 500; }
 
-@keyframes statusPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
-}
+@keyframes statusPulse{ 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.5; transform:scale(.8);} }
 
-.status-indicator strong{
-  color: var(--white);
-  font-weight: 500;
-}
-[data-theme="light"] .status-indicator strong{
-  color: var(--white);
-}
-
-/* Hero Stats */
 .hero-stats{
   position: absolute;
-  bottom: 5%;
-  right: 5%;
-  z-index: 3;
+  top: 15%;
+  right: -12%;
+  z-index: 8;
   text-align: right;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  opacity: 0;
 }
-
-.hero-stat{
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  color: var(--mist-dim);
-  text-transform: uppercase;
-  transition: color 0.5s ease;
-}
-
-.hero-stat strong{
-  font-size: 1.2rem;
-  color: var(--white);
-  font-family: var(--font-display);
-  letter-spacing: 0.05em;
-  transition: color 0.5s ease;
-}
+.hero-stat{ font-size: 0.68rem; letter-spacing:0.08em; color: var(--mist-dim); text-transform:uppercase; transition: color 0.5s ease; }
+.hero-stat strong{ font-size: 1.15rem; color: var(--white); font-family: var(--font-display); letter-spacing:0.05em; transition: color 0.5s ease; }
 
 /* Responsive Hero */
 @media (max-width: 992px){
@@ -782,34 +874,18 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   .hero-sub{ margin-left: auto; margin-right: auto; }
   .hero-actions{ justify-content: center; }
   .hero-visual{ margin-top: 40px; min-height: 380px; }
-  .premium-showcase{ max-width: 380px; }
-  .hero-stats{ display: none; }
-  .showcase-badge{ display: none; }
-  .status-indicator{ display: none; }
+  .dev-scene{ max-width: 420px; }
+  .hero-stats{ display:none; }
+  .status-indicator{ display:none; }
+  .tf-css, .tf-js, .tf-three{ display:none; }
 }
 
 @media (max-width: 576px){
   .hero-visual{ min-height: 300px; }
-  .premium-showcase{ max-width: 300px; }
-  .tech-cube-wrapper{ width: 70%; height: 70%; }
-  .cube-face-front { transform: translateZ(40px); }
-  .cube-face-back { transform: rotateY(180deg) translateZ(40px); }
-  .cube-face-right { transform: rotateY(90deg) translateZ(40px); }
-  .cube-face-left { transform: rotateY(-90deg) translateZ(40px); }
-  .cube-face-top { transform: rotateX(90deg) translateZ(40px); }
-  .cube-face-bottom { transform: rotateX(-90deg) translateZ(40px); }
-  .cube-face .tech-icon{ font-size: 1.8rem; }
+  .dev-scene{ max-width: 320px; }
+  .dev-monitor-body{ font-size: 0.6rem; }
+  .tech-float{ display:none; }
 }
-
-.hero-float{
-  position:absolute; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: linear-gradient(160deg, rgba(183,53,0,0.14), transparent 60%);
-  z-index:1;
-}
-.hero-float-1{ width:120px; height:120px; top:22%; left:10%; }
-.hero-float-2{ width:70px; height:70px; top:64%; right:12%; }
-.hero-float-3{ width:44px; height:44px; top:18%; right:20%; }
 
 /* =========================================================
    BUTTONS
@@ -817,6 +893,7 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 .btn-forge{
   position: relative;
   display:inline-flex; align-items:center; justify-content:center;
+  gap: 9px;
   padding: 16px 34px;
   font-family: var(--font-body); font-weight: 500;
   font-size: 0.92rem; letter-spacing: 0.03em;
@@ -825,7 +902,7 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   isolation: isolate;
   transition: transform .3s var(--ease-out), box-shadow .3s ease, color .3s ease, background .3s ease, border-color .3s ease;
 }
-.btn-forge span{ position: relative; z-index: 2; }
+.btn-forge span{ position: relative; z-index: 2; display:flex; align-items:center; gap:9px; }
 .btn-forge-fill{
   background: var(--rust);
   color: var(--white);
@@ -841,9 +918,9 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 .btn-forge-fill:hover{ box-shadow: 0 10px 40px rgba(232,72,15,0.55); }
 
 .btn-forge-outline{
-  border: 1px solid rgba(255,255,255,0.28);
+  border: 1px solid var(--glass-strong-border);
   color: var(--white);
-  background: rgba(255,255,255,0.02);
+  background: var(--glass);
 }
 .btn-forge-outline:hover{
   border-color: var(--rust-bright);
@@ -855,11 +932,6 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 }
 .btn-forge-ghost:hover{ color: var(--white); }
 .btn-forge-sm{ padding: 11px 22px; font-size: 0.82rem; }
-
-[data-theme="light"] .btn-forge-outline{
-  border-color: rgba(0,0,0,0.2);
-  color: var(--white);
-}
 
 /* =========================================================
    ABOUT
@@ -894,7 +966,7 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 .plate-label{ font-size:0.85rem; color: var(--mist-dim); line-height:1.5; }
 .about-visual-ring{
   position:absolute; top: -30px; right: -30px; width:120px; height:120px;
-  border: 1px solid rgba(255,255,255,0.12); border-radius:50%;
+  border: 1px solid var(--glass-strong-border); border-radius:50%;
 }
 
 .about-copy{
@@ -910,8 +982,10 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   padding: 9px 18px; border-radius: 30px;
   border: 1px solid var(--glass-border);
   background: var(--glass); color: var(--mist);
+  display: inline-flex; align-items: center; gap: 8px;
   transition: border-color 0.5s ease, background 0.5s ease, color 0.5s ease;
 }
+.about-tag i{ color: var(--rust-bright); font-size: 0.8rem; }
 
 /* =========================================================
    SKILLS
@@ -926,10 +1000,11 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 }
 .skill-card{ padding: 6px 0; }
 .skill-card-top{ display:flex; justify-content:space-between; margin-bottom: 10px; }
-.skill-name{ font-size: 0.95rem; letter-spacing: 0.02em; transition: color 0.5s ease; }
+.skill-name{ font-size: 0.95rem; letter-spacing: 0.02em; transition: color 0.5s ease; display:flex; align-items:center; gap:9px; }
+.skill-name i{ color: var(--rust-bright); font-size: 0.85rem; width: 16px; text-align:center; }
 .skill-value{ font-size: 0.85rem; color: var(--mist-dim); font-variant-numeric: tabular-nums; transition: color 0.5s ease; }
 .skill-bar{
-  height: 3px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow:hidden;
+  height: 3px; border-radius: 3px; background: var(--glass-strong); overflow:hidden;
   transition: background 0.5s ease;
 }
 .skill-bar-fill{
@@ -1048,7 +1123,7 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 
 .timeline-track{
   position:absolute; left: 5px; top:6px; bottom: 6px; width:1px;
-  background: rgba(255,255,255,0.12);
+  background: var(--glass-strong-border);
   transition: background 0.5s ease;
 }
 .timeline-track-fill{
@@ -1089,14 +1164,11 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 .milestone-card{
   padding: 20px 24px;
   border-radius: 16px;
-  background: rgba(255,255,255,0.03);
+  background: var(--glass);
   border: 1px solid var(--glass-border);
   transition: all .4s ease;
   position: relative;
   overflow: hidden;
-}
-[data-theme="light"] .milestone-card{
-  background: rgba(0,0,0,0.03);
 }
 
 .milestone-card::before{
@@ -1122,9 +1194,10 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 }
 
 .milestone-icon{
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   margin-bottom: 8px;
   display: block;
+  color: var(--rust-bright);
 }
 
 .milestone-number{
@@ -1164,12 +1237,9 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 
 .progress-ring .bg{
   fill: none;
-  stroke: rgba(255,255,255,0.06);
+  stroke: var(--glass-strong);
   stroke-width: 4;
   transition: stroke 0.5s ease;
-}
-[data-theme="light"] .progress-ring .bg{
-  stroke: rgba(0,0,0,0.06);
 }
 
 .progress-ring .progress{
@@ -1224,13 +1294,10 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 .skill-growth-item .bar-track{
   flex: 1;
   height: 4px;
-  background: rgba(255,255,255,0.06);
+  background: var(--glass-strong);
   border-radius: 4px;
   overflow: hidden;
   transition: background 0.5s ease;
-}
-[data-theme="light"] .skill-growth-item .bar-track{
-  background: rgba(0,0,0,0.06);
 }
 
 .skill-growth-item .bar-fill{
@@ -1290,7 +1357,7 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   padding: 34px 26px;
   border-radius: 20px;
   border: 1px solid var(--glass-border);
-  background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+  background: linear-gradient(160deg, var(--glass-strong), var(--glass));
   backdrop-filter: blur(6px);
   transition: transform .4s var(--ease-out), border-color .4s ease, box-shadow .4s ease, background 0.5s ease;
 }
@@ -1299,7 +1366,7 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   border-color: rgba(232,72,15,0.5);
   box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(183,53,0,0.15);
 }
-.service-icon{ font-size: 1.2rem; color: var(--rust-bright); }
+.service-icon{ font-size: 1.2rem; color: var(--rust-bright); display:inline-flex; align-items:center; justify-content:center; }
 .service-card h3{ font-size: 1.05rem; font-family: var(--font-body); font-weight: 700; margin: 18px 0 10px; }
 .service-card p{ font-size: 0.9rem; color: var(--mist-dim); line-height: 1.65; transition: color 0.5s ease; }
 
@@ -1327,24 +1394,22 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   padding: 34px 26px;
   border-radius: 20px;
   border: 1px solid var(--glass-border);
-  background: linear-gradient(160deg, rgba(232,72,15,0.08), rgba(255,255,255,0.01));
+  background: linear-gradient(160deg, rgba(232,72,15,0.08), var(--glass));
   backdrop-filter: blur(6px);
   transition: transform .4s var(--ease-out), border-color .4s ease, box-shadow .4s ease, background 0.5s ease;
   position: relative;
   overflow: hidden;
 }
-[data-theme="light"] .mobile-app-card{
-  background: linear-gradient(160deg, rgba(232,72,15,0.04), rgba(0,0,0,0.01));
-}
 
-.mobile-app-card::before{
-  content: '📱';
+.mobile-app-card-bg-icon{
   position: absolute;
-  top: -20px;
-  right: -10px;
+  top: -14px;
+  right: -6px;
   font-size: 4rem;
   opacity: 0.06;
   transform: rotate(15deg);
+  color: var(--white);
+  pointer-events: none;
 }
 
 .mobile-app-card:hover{
@@ -1356,9 +1421,12 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
 .mobile-app-card .service-icon{ 
   font-size: 1.4rem; 
   color: var(--rust-bright);
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: rgba(232,72,15,0.12);
-  padding: 8px 12px;
+  width: 42px;
+  height: 42px;
   border-radius: 10px;
 }
 
@@ -1404,15 +1472,13 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   flex: 0 0 min(560px, 84vw);
   padding: 42px;
   border-radius: 22px;
-  background: rgba(255,255,255,0.04);
+  background: var(--glass-strong);
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(10px);
   transition: background 0.5s ease, border-color 0.5s ease;
 }
-[data-theme="light"] .testi-card{
-  background: rgba(0,0,0,0.03);
-}
 .testi-quote{ font-size: 1.15rem; line-height: 1.7; color: var(--white); display:block; margin-bottom: 26px; transition: color 0.5s ease; }
+.testi-quote i{ color: var(--rust-bright); margin-right: 6px; opacity: 0.7; }
 .testi-author{ display:flex; flex-direction:column; }
 .testi-name{ font-weight: 700; }
 .testi-role{ font-size: 0.82rem; color: var(--rust-bright); margin-top:4px; }
@@ -1424,6 +1490,7 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   width:52px; height:52px; border-radius:50%;
   border: 1px solid var(--glass-border); background: var(--glass); color:var(--white);
   cursor:pointer; font-size:1.1rem;
+  display:flex; align-items:center; justify-content:center;
   transition: border-color .3s ease, background .3s ease, color 0.5s ease;
 }
 .testi-btn:hover{ border-color: var(--rust-bright); background: rgba(183,53,0,0.15); }
@@ -1433,20 +1500,29 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
    ========================================================= */
 .contact{ background: var(--ink); }
 .contact-info{ margin: 34px 0 26px; display:flex; flex-direction:column; gap: 20px; }
-.contact-info-item{ display:flex; flex-direction:column; gap:4px; }
+.contact-info-item{ display:flex; align-items:center; gap: 14px; }
+.contact-info-icon{
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--glass-border); background: var(--glass);
+  display:flex; align-items:center; justify-content:center;
+  color: var(--rust-bright); font-size: 0.95rem; flex-shrink: 0;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+.contact-info-text{ display:flex; flex-direction:column; gap:4px; }
 .contact-info-label{ font-size: 0.7rem; letter-spacing:0.25em; text-transform:uppercase; color: var(--mist-dim); transition: color 0.5s ease; }
 .contact-info-value{ font-size: 1.05rem; transition: color 0.5s ease; }
 a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
+a.contact-info-item:hover .contact-info-icon{ border-color: var(--rust-bright); background: rgba(183,53,0,0.15); }
 
 .social-icons{ display:flex; gap: 14px; }
 .social-icons a{
   width:46px; height:46px; border-radius:50%;
   border: 1px solid var(--glass-border);
   display:flex; align-items:center; justify-content:center;
-  font-size: 0.75rem; letter-spacing:0.05em;
+  font-size: 1rem;
   transition: border-color .3s ease, background .3s ease, transform .3s ease, color 0.5s ease;
 }
-.social-icons a:hover{ border-color: var(--rust-bright); background: rgba(183,53,0,0.15); transform: translateY(-3px); }
+.social-icons a:hover{ border-color: var(--rust-bright); background: rgba(183,53,0,0.15); transform: translateY(-3px); color: var(--rust-bright); }
 
 .contact-form{ display:flex; flex-direction:column; gap: 22px; }
 .form-row{ display:grid; grid-template-columns: 1fr 1fr; gap: 22px; }
@@ -1471,7 +1547,8 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 .form-field textarea:not(:placeholder-shown) + label{
   top: -14px; font-size: 0.72rem; letter-spacing: 0.1em; color: var(--rust-bright);
 }
-.form-note{ font-size: 0.85rem; color: var(--mist-dim); min-height: 20px; transition: color 0.5s ease; }
+.form-note{ font-size: 0.85rem; color: var(--mist-dim); min-height: 20px; transition: color 0.5s ease; display:flex; align-items:center; gap:8px; }
+.form-note i{ color: var(--rust-bright); }
 
 /* =========================================================
    ENHANCED FOOTER
@@ -1514,7 +1591,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 .brand-footer .brand-mark{
   font-size: 1.8rem;
   padding: 12px 24px;
-  background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
+  background: linear-gradient(160deg, var(--glass-strong), var(--glass));
   border-color: rgba(232,72,15,0.3);
   box-shadow: 0 0 30px rgba(183,53,0,0.1);
   transition: all .4s ease;
@@ -1591,14 +1668,10 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
-  letter-spacing: 0.03em;
+  font-size: 0.95rem;
   color: var(--mist-dim);
   transition: all .3s ease;
-  background: rgba(255,255,255,0.02);
-}
-[data-theme="light"] .footer-social a{
-  background: rgba(0,0,0,0.02);
+  background: var(--glass);
 }
 
 .footer-social a:hover{
@@ -1622,9 +1695,12 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
   margin-top: 6px;
   letter-spacing: 0.04em;
   transition: color 0.5s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.footer-copy span{
+.footer-copy i{
   color: var(--rust-bright);
 }
 
@@ -1642,12 +1718,10 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
   margin-top: 4px;
   transition: background 0.5s ease, border-color 0.5s ease, color 0.5s ease;
 }
-[data-theme="light"] .footer-app-badge{
-  background: rgba(232,72,15,0.04);
-}
 
-.footer-app-badge span{
+.footer-app-badge i{
   color: var(--rust-bright);
+  font-size: 0.65rem;
 }
 
 @media (max-width: 576px){
@@ -1657,7 +1731,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
   .footer-social a{
     width: 38px;
     height: 38px;
-    font-size: 0.6rem;
+    font-size: 0.8rem;
   }
   .footer-links{
     gap: 20px;
@@ -1677,7 +1751,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
     --section-pad: 96px;
     --container-pad: 20px;
   }
-  .hero{ padding-top: 100px; min-height: auto; }
+  .hero-pin-wrap{ padding-top: 100px; min-height: auto; }
   .hero-title{ font-size: clamp(2.8rem, 15vw, 4.4rem); }
   .hero-sub{ font-size: 0.98rem; }
   .hero-actions{ flex-direction: column; width: 100%; }
@@ -1777,7 +1851,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
       <li><a href="#contact" class="nav-link nav-cta" data-magnetic>Let's Talk</a></li>
       <li>
         <button class="theme-toggle" id="themeToggle" data-magnetic aria-label="Toggle theme">
-          <span class="icon" id="themeIcon">🌙</span>
+          <i class="icon fa-solid fa-moon" id="themeIcon"></i>
           <span id="themeLabel">Dark</span>
         </button>
       </li>
@@ -1787,78 +1861,171 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
 <main>
 
-  <!-- ============ 1. ENHANCED HERO WITH PREMIUM VISUAL ============ -->
+  <!-- ============ 1. HERO — "THE WORKBENCH" (pinned scroll story) ============ -->
   <section class="hero" id="hero">
-    <div class="hero-bg">
-      <div class="ember-field" id="emberField"></div>
-      <div class="forge-grid"></div>
-      <div class="hero-glow"></div>
-    </div>
+    <div class="hero-pin-wrap" id="heroPinWrap">
 
-    <div class="container-fluid">
-      <div class="row align-items-center">
-        
-        <!-- LEFT SIDE: Content -->
-        <div class="col-lg-7 hero-content">
-          <p class="hero-eyebrow reveal-line"><span>Frontend Engineer — Creative Developer & Mobile Specialist</span></p>
-
-          <h1 class="hero-title">
-            <span class="line" data-split>DAUD</span>
-            <span class="line" data-split>IMRAN</span>
-          </h1>
-
-          <p class="hero-sub reveal-line"><span>I forge interfaces that feel alive — cinematic motion, precision engineering, and cross-platform apps built with Flutter & Firebase.</span></p>
-
-          <div class="hero-actions reveal-line">
-            <a href="#work" class="btn-forge btn-forge-fill" data-magnetic>
-              <span>View The Work</span>
-            </a>
-            <a href="#mobile-apps" class="btn-forge btn-forge-outline" data-magnetic>
-              <span>Mobile Apps</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- RIGHT SIDE: Premium Tech Showcase -->
-        <div class="col-lg-5 hero-visual">
-          <div class="premium-showcase">
-            <div class="showcase-glass"></div>
-            <div class="tech-cube-wrapper">
-              <div class="tech-cube">
-                <div class="cube-face"><span class="tech-icon">⚛️</span></div>
-                <div class="cube-face"><span class="tech-icon">📱</span></div>
-                <div class="cube-face"><span class="tech-icon">🔥</span></div>
-                <div class="cube-face"><span class="tech-icon">🎨</span></div>
-                <div class="cube-face"><span class="tech-icon">🚀</span></div>
-                <div class="cube-face"><span class="tech-icon">⚡</span></div>
-              </div>
-            </div>
-            <span class="showcase-badge"><span class="badge-dot" style="background: #E8480F;"></span>React</span>
-            <span class="showcase-badge"><span class="badge-dot" style="background: #61dafb;"></span>Flutter</span>
-            <span class="showcase-badge"><span class="badge-dot" style="background: #ffd700;"></span>Firebase</span>
-            <span class="showcase-badge"><span class="badge-dot" style="background: #ff6b6b;"></span>Dart</span>
-            <div class="status-indicator">
-              <span class="status-dot"></span>
-              <span>Available for <strong>New Projects</strong></span>
-            </div>
-            <div class="hero-stats">
-              <div class="hero-stat"><strong>8+</strong> Years Experience</div>
-              <div class="hero-stat"><strong>50+</strong> Projects Delivered</div>
-            </div>
-          </div>
-        </div>
-
+      <div class="hero-bg" id="heroBg">
+        <div class="hero-bg-gradient"></div>
+        <div class="hero-noise"></div>
+        <div class="forge-grid"></div>
+        <div class="hero-rays"></div>
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+        <div class="ember-field" id="emberField"></div>
+        <div class="hero-glow" id="heroGlow"></div>
       </div>
-    </div>
 
-    <div class="scroll-indicator" data-magnetic>
-      <span class="scroll-indicator-line"></span>
-      <span class="scroll-indicator-label">SCROLL</span>
-    </div>
+      <div class="container-fluid hero-inner">
+        <div class="row align-items-center">
 
-    <div class="hero-float hero-float-1"></div>
-    <div class="hero-float hero-float-2"></div>
-    <div class="hero-float hero-float-3"></div>
+          <!-- LEFT: Content -->
+          <div class="col-lg-6 hero-content" id="heroContent">
+            <p class="hero-eyebrow reveal-line"><span>Frontend Engineer — Creative Developer & Mobile Specialist</span></p>
+
+            <h1 class="hero-title">
+              <span class="line" data-split>DAUD</span>
+              <span class="line" data-split>IMRAN</span>
+            </h1>
+
+            <p class="hero-sub reveal-line"><span>I forge interfaces that feel alive — cinematic motion, precision engineering, and cross-platform apps built with Flutter & Firebase.</span></p>
+
+            <div class="hero-actions reveal-line">
+              <a href="#work" class="btn-forge btn-forge-fill" data-magnetic>
+                <span><i class="fa-solid fa-layer-group"></i>View The Work</span>
+              </a>
+              <a href="#mobile-apps" class="btn-forge btn-forge-outline" data-magnetic>
+                <span><i class="fa-solid fa-mobile-screen-button"></i>Mobile Apps</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- RIGHT: The Workbench — a live developer scene -->
+          <div class="col-lg-6 hero-visual" id="heroVisual">
+            <div class="dev-scene" id="devScene">
+
+              <svg class="dev-connections" id="devConnections" viewBox="0 0 560 520" preserveAspectRatio="none">
+                <path id="connA" d="M 340 130 C 420 160, 440 260, 470 300"></path>
+                <path id="connB" d="M 250 260 C 300 300, 330 340, 380 380"></path>
+                <path id="connC" d="M 120 300 C 180 320, 220 260, 260 200"></path>
+              </svg>
+
+              <!-- Monitor: code editor -->
+              <div class="dev-monitor" id="devMonitor">
+                <div class="dev-monitor-bar">
+                  <span class="dev-dot dev-dot-r"></span>
+                  <span class="dev-dot dev-dot-y"></span>
+                  <span class="dev-dot dev-dot-g"></span>
+                  <span class="dev-file-tab">hero.js</span>
+                </div>
+                <div class="dev-monitor-body" id="devCodeBody">
+                  <div class="dev-code-line"><span class="ln">01</span><span class="code"><span class="tok-kw">const</span> <span class="tok-fn">hero</span> <span class="tok-punc">=</span> <span class="tok-punc">{</span></span></div>
+                  <div class="dev-code-line"><span class="ln">02</span><span class="code">&nbsp;&nbsp;<span class="tok-attr">name</span><span class="tok-punc">:</span> <span class="tok-str">'Daud Imran'</span><span class="tok-punc">,</span></span></div>
+                  <div class="dev-code-line"><span class="ln">03</span><span class="code">&nbsp;&nbsp;<span class="tok-attr">stack</span><span class="tok-punc">:</span> <span class="tok-punc">[</span><span class="tok-str">'GSAP'</span><span class="tok-punc">,</span> <span class="tok-str">'Three.js'</span><span class="tok-punc">],</span></span></div>
+                  <div class="dev-code-line"><span class="ln">04</span><span class="code">&nbsp;&nbsp;<span class="tok-attr">render</span><span class="tok-punc">()</span> <span class="tok-punc">{</span></span></div>
+                  <div class="dev-code-line"><span class="ln">05</span><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;<span class="tok-kw">return</span> <span class="tok-tag">&lt;Cinematic/&gt;</span><span class="tok-punc">;</span></span></div>
+                  <div class="dev-code-line"><span class="ln">06</span><span class="code">&nbsp;&nbsp;<span class="tok-punc">}</span></span></div>
+                  <div class="dev-code-line"><span class="ln">07</span><span class="code"><span class="tok-punc">};</span><span class="dev-cursor-blink"></span></span></div>
+                </div>
+                <div class="dev-compile-strip" id="devCompileStrip">
+                  <span class="compile-dot"></span>
+                  <span>BUILDING PRODUCTION BUNDLE…</span>
+                </div>
+              </div>
+
+              <!-- Laptop: browser preview -->
+              <div class="dev-laptop" id="devLaptop">
+                <div class="dev-browser-bar">
+                  <span class="dev-dot dev-dot-r" style="width:6px;height:6px;"></span>
+                  <span class="dev-dot dev-dot-y" style="width:6px;height:6px;"></span>
+                  <span class="dev-dot dev-dot-g" style="width:6px;height:6px;"></span>
+                  <span class="dev-browser-url">daudimran.dev</span>
+                </div>
+                <div class="dev-browser-body">
+                  <div class="dev-render-block b1"></div>
+                  <div class="dev-render-block b2"></div>
+                  <div class="dev-render-block b3"></div>
+                  <div class="dev-render-block b4"></div>
+                  <div class="dev-render-block b5"></div>
+                </div>
+              </div>
+
+              <!-- Mobile preview: real Pulse Health app UI -->
+              <div class="dev-mobile" id="devMobile">
+                <div class="dev-mobile-notch"></div>
+                <div class="dev-mobile-body">
+                  <span class="dev-mobile-app-name">Pulse Health</span>
+                  <span class="dev-mobile-app-tag">Today's Overview</span>
+
+                  <div class="dev-mobile-stat-card">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span class="stat-txt">
+                      <span class="stat-num">72 bpm</span>
+                      <span class="stat-label">Heart Rate</span>
+                    </span>
+                  </div>
+
+                  <div class="dev-mobile-row">
+                    <div class="dev-mobile-mini">
+                      <i class="fa-solid fa-shoe-prints"></i>
+                      <span>8,420 steps</span>
+                    </div>
+                    <div class="dev-mobile-mini">
+                      <i class="fa-solid fa-fire-flame-curved"></i>
+                      <span>410 kcal</span>
+                    </div>
+                  </div>
+
+                  <div class="dev-mobile-chart" id="devMobileChart">
+                    <span style="height:40%"></span>
+                    <span style="height:65%"></span>
+                    <span style="height:35%"></span>
+                    <span style="height:80%"></span>
+                    <span style="height:55%"></span>
+                    <span style="height:70%"></span>
+                    <span style="height:45%"></span>
+                  </div>
+
+                  <div class="dev-mobile-nav">
+                    <i class="fa-solid fa-house active"></i>
+                    <i class="fa-solid fa-chart-simple"></i>
+                    <i class="fa-solid fa-bell"></i>
+                    <i class="fa-solid fa-user"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Floating tech labels -->
+              <span class="tech-float tf-html" data-tech><i class="fa-brands fa-html5"></i>HTML</span>
+              <span class="tech-float tf-css" data-tech><i class="fa-brands fa-css3-alt"></i>CSS</span>
+              <span class="tech-float tf-bootstrap" data-tech><i class="fa-brands fa-bootstrap"></i>Bootstrap</span>
+              <span class="tech-float tf-js" data-tech><i class="fa-brands fa-square-js"></i>JavaScript</span>
+              <span class="tech-float tf-gsap" data-tech><i class="fa-solid fa-bolt"></i>GSAP</span>
+              <span class="tech-float tf-three" data-tech><i class="fa-solid fa-cube"></i>Three.js</span>
+              <span class="tech-float tf-php" data-tech><i class="fa-brands fa-php"></i>PHP</span>
+
+              <div class="status-indicator" id="devStatus">
+                <span class="status-dot"></span>
+                <span>Currently <strong>Compiling Ideas</strong></span>
+              </div>
+
+              <div class="hero-stats" id="devStats">
+                <div class="hero-stat"><strong>3+</strong> Years Experience</div>
+                <div class="hero-stat"><strong>25+</strong> Projects Delivered</div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="scroll-indicator" data-magnetic>
+        <span class="scroll-indicator-line"></span>
+        <span class="scroll-indicator-label">SCROLL</span>
+      </div>
+
+    </div>
   </section>
 
   <!-- ============ 2. ABOUT ============ -->
@@ -1891,12 +2058,12 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
           </p>
 
           <div class="about-tags reveal-up">
-            <span class="about-tag">Motion Design</span>
-            <span class="about-tag">Performance Engineering</span>
-            <span class="about-tag">Design Systems</span>
-            <span class="about-tag">Cinematic UX</span>
-            <span class="about-tag">Flutter</span>
-            <span class="about-tag">Firebase</span>
+            <span class="about-tag"><i class="fa-solid fa-film"></i>Motion Design</span>
+            <span class="about-tag"><i class="fa-solid fa-gauge-high"></i>Performance Engineering</span>
+            <span class="about-tag"><i class="fa-solid fa-swatchbook"></i>Design Systems</span>
+            <span class="about-tag"><i class="fa-solid fa-clapperboard"></i>Cinematic UX</span>
+            <span class="about-tag"><i class="fa-solid fa-mobile-screen-button"></i>Flutter</span>
+            <span class="about-tag"><i class="fa-solid fa-fire"></i>Firebase</span>
           </div>
         </div>
 
@@ -1914,7 +2081,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="96">
           <div class="skill-card-top">
-            <span class="skill-name">HTML5</span>
+            <span class="skill-name"><i class="fa-brands fa-html5"></i>HTML5</span>
             <span class="skill-value">96%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -1922,7 +2089,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="94">
           <div class="skill-card-top">
-            <span class="skill-name">CSS3</span>
+            <span class="skill-name"><i class="fa-brands fa-css3-alt"></i>CSS3</span>
             <span class="skill-value">94%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -1930,7 +2097,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="90">
           <div class="skill-card-top">
-            <span class="skill-name">Bootstrap</span>
+            <span class="skill-name"><i class="fa-brands fa-bootstrap"></i>Bootstrap</span>
             <span class="skill-value">90%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -1938,7 +2105,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="93">
           <div class="skill-card-top">
-            <span class="skill-name">JavaScript</span>
+            <span class="skill-name"><i class="fa-brands fa-square-js"></i>JavaScript</span>
             <span class="skill-value">93%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -1946,7 +2113,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="97">
           <div class="skill-card-top">
-            <span class="skill-name">GSAP</span>
+            <span class="skill-name"><i class="fa-solid fa-bolt"></i>GSAP</span>
             <span class="skill-value">97%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -1954,7 +2121,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="92">
           <div class="skill-card-top">
-            <span class="skill-name">Flutter</span>
+            <span class="skill-name"><i class="fa-solid fa-mobile-screen-button"></i>Flutter</span>
             <span class="skill-value">92%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -1962,7 +2129,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="89">
           <div class="skill-card-top">
-            <span class="skill-name">Dart</span>
+            <span class="skill-name"><i class="fa-solid fa-code"></i>Dart</span>
             <span class="skill-value">89%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -1970,7 +2137,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="85">
           <div class="skill-card-top">
-            <span class="skill-name">Firebase</span>
+            <span class="skill-name"><i class="fa-solid fa-fire"></i>Firebase</span>
             <span class="skill-value">85%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -1978,7 +2145,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="78">
           <div class="skill-card-top">
-            <span class="skill-name">PHP</span>
+            <span class="skill-name"><i class="fa-brands fa-php"></i>PHP</span>
             <span class="skill-value">78%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -1986,7 +2153,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="75">
           <div class="skill-card-top">
-            <span class="skill-name">MySQL</span>
+            <span class="skill-name"><i class="fa-solid fa-database"></i>MySQL</span>
             <span class="skill-value">75%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -1994,7 +2161,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="88">
           <div class="skill-card-top">
-            <span class="skill-name">Git</span>
+            <span class="skill-name"><i class="fa-brands fa-git-alt"></i>Git</span>
             <span class="skill-value">88%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -2002,7 +2169,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="88">
           <div class="skill-card-top">
-            <span class="skill-name">GitHub</span>
+            <span class="skill-name"><i class="fa-brands fa-github"></i>GitHub</span>
             <span class="skill-value">88%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -2010,7 +2177,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
         <div class="skill-card" data-skill-level="95">
           <div class="skill-card-top">
-            <span class="skill-name">Responsive Design</span>
+            <span class="skill-name"><i class="fa-solid fa-mobile-screen"></i>Responsive Design</span>
             <span class="skill-value">95%</span>
           </div>
           <div class="skill-bar"><span class="skill-bar-fill"></span></div>
@@ -2041,8 +2208,8 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
             <span>HTML5</span><span>CSS3</span><span>GSAP</span><span>Bootstrap 5</span>
           </div>
           <div class="work-links reveal-up">
-            <a href="https://solace-meditation.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic>Live Demo</a>
-            <a href="https://github.com/yourusername/solace" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic>GitHub</a>
+            <a href="https://solace-meditation.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic><i class="fa-solid fa-arrow-up-right-from-square"></i>Live Demo</a>
+            <a href="https://github.com/yourusername/solace" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic><i class="fa-brands fa-github"></i>GitHub</a>
           </div>
         </div>
       </article>
@@ -2059,8 +2226,8 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
             <span>Flutter</span><span>Dart</span><span>Firebase</span><span>AI/ML</span>
           </div>
           <div class="work-links reveal-up">
-            <a href="https://pulse-health.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic>Live Demo</a>
-            <a href="https://github.com/yourusername/pulse-health" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic>GitHub</a>
+            <a href="https://pulse-health.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic><i class="fa-solid fa-arrow-up-right-from-square"></i>Live Demo</a>
+            <a href="https://github.com/yourusername/pulse-health" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic><i class="fa-brands fa-github"></i>GitHub</a>
           </div>
         </div>
       </article>
@@ -2077,8 +2244,8 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
             <span>PHP</span><span>MySQL</span><span>Three.js</span><span>CSS3</span>
           </div>
           <div class="work-links reveal-up">
-            <a href="https://aura-studio.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic>Live Demo</a>
-            <a href="https://github.com/yourusername/aura-studio" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic>GitHub</a>
+            <a href="https://aura-studio.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic><i class="fa-solid fa-arrow-up-right-from-square"></i>Live Demo</a>
+            <a href="https://github.com/yourusername/aura-studio" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic><i class="fa-brands fa-github"></i>GitHub</a>
           </div>
         </div>
       </article>
@@ -2095,8 +2262,8 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
             <span>JavaScript</span><span>Firebase</span><span>WebSockets</span><span>Bootstrap 5</span>
           </div>
           <div class="work-links reveal-up">
-            <a href="https://nexus-chat.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic>Live Demo</a>
-            <a href="https://github.com/yourusername/nexus-chat" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic>GitHub</a>
+            <a href="https://nexus-chat.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic><i class="fa-solid fa-arrow-up-right-from-square"></i>Live Demo</a>
+            <a href="https://github.com/yourusername/nexus-chat" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic><i class="fa-brands fa-github"></i>GitHub</a>
           </div>
         </div>
       </article>
@@ -2113,8 +2280,8 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
             <span>React</span><span>Node.js</span><span>MongoDB</span><span>GSAP</span>
           </div>
           <div class="work-links reveal-up">
-            <a href="https://ignite-academy.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic>Live Demo</a>
-            <a href="https://github.com/yourusername/ignite-academy" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic>GitHub</a>
+            <a href="https://ignite-academy.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic><i class="fa-solid fa-arrow-up-right-from-square"></i>Live Demo</a>
+            <a href="https://github.com/yourusername/ignite-academy" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic><i class="fa-brands fa-github"></i>GitHub</a>
           </div>
         </div>
       </article>
@@ -2131,8 +2298,8 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
             <span>HTML5</span><span>CSS3</span><span>GSAP MotionPath</span><span>MySQL</span>
           </div>
           <div class="work-links reveal-up">
-            <a href="https://kindling-foundation.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic>Live Demo</a>
-            <a href="https://github.com/yourusername/kindling" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic>GitHub</a>
+            <a href="https://kindling-foundation.vercel.app" target="_blank" class="btn-forge btn-forge-sm btn-forge-outline" data-magnetic><i class="fa-solid fa-arrow-up-right-from-square"></i>Live Demo</a>
+            <a href="https://github.com/yourusername/kindling" target="_blank" class="btn-forge btn-forge-sm btn-forge-ghost" data-magnetic><i class="fa-brands fa-github"></i>GitHub</a>
           </div>
         </div>
       </article>
@@ -2188,22 +2355,22 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
         <div class="journey-visual">
           <div class="milestone-grid">
             <div class="milestone-card">
-              <span class="milestone-icon">🏆</span>
-              <div class="milestone-number">50+</div>
+              <i class="fa-solid fa-trophy milestone-icon"></i>
+              <div class="milestone-number">25+</div>
               <div class="milestone-label">Projects Delivered</div>
             </div>
             <div class="milestone-card">
-              <span class="milestone-icon">🌍</span>
+              <i class="fa-solid fa-earth-americas milestone-icon"></i>
               <div class="milestone-number">20+</div>
               <div class="milestone-label">Happy Clients</div>
             </div>
             <div class="milestone-card">
-              <span class="milestone-icon">📱</span>
+              <i class="fa-solid fa-mobile-screen-button milestone-icon"></i>
               <div class="milestone-number">15+</div>
               <div class="milestone-label">Mobile Apps</div>
             </div>
             <div class="milestone-card">
-              <span class="milestone-icon">⭐</span>
+              <i class="fa-solid fa-star milestone-icon"></i>
               <div class="milestone-number">100%</div>
               <div class="milestone-label">Client Satisfaction</div>
             </div>
@@ -2277,42 +2444,42 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
       <div class="services-grid">
         <div class="service-card reveal-up">
-          <span class="service-icon">◆</span>
+          <i class="fa-solid fa-code service-icon"></i>
           <h3>Frontend Development</h3>
           <p>Hand-built, framework-free interfaces engineered for speed and precision.</p>
         </div>
         <div class="service-card reveal-up">
-          <span class="service-icon">◇</span>
+          <i class="fa-solid fa-server service-icon"></i>
           <h3>Backend Development</h3>
           <p>Lightweight PHP &amp; MySQL foundations to power forms, content, and data.</p>
         </div>
         <div class="service-card reveal-up">
-          <span class="service-icon">◆</span>
+          <i class="fa-solid fa-mobile-screen service-icon"></i>
           <h3>Responsive Websites</h3>
           <p>Layouts tuned by hand at every breakpoint, not just resized.</p>
         </div>
         <div class="service-card reveal-up">
-          <span class="service-icon">◇</span>
+          <i class="fa-solid fa-rocket service-icon"></i>
           <h3>Landing Pages</h3>
           <p>High-conversion pages designed to hold attention and move it forward.</p>
         </div>
         <div class="service-card reveal-up">
-          <span class="service-icon">◆</span>
+          <i class="fa-solid fa-briefcase service-icon"></i>
           <h3>Portfolio Websites</h3>
           <p>Cinematic showcases built to make creative work impossible to scroll past.</p>
         </div>
         <div class="service-card reveal-up">
-          <span class="service-icon">◇</span>
+          <i class="fa-solid fa-building service-icon"></i>
           <h3>Business Websites</h3>
           <p>Professional, trustworthy builds that represent a brand at full strength.</p>
         </div>
         <div class="service-card reveal-up">
-          <span class="service-icon">📱</span>
+          <i class="fa-solid fa-mobile-screen-button service-icon"></i>
           <h3>Flutter App Development</h3>
           <p>Cross-platform mobile apps for iOS & Android with a single codebase using Flutter & Dart.</p>
         </div>
         <div class="service-card reveal-up">
-          <span class="service-icon">🔥</span>
+          <i class="fa-solid fa-fire service-icon"></i>
           <h3>Firebase Backend</h3>
           <p>Scalable backend solutions with Firebase — Auth, Firestore, Cloud Functions, and hosting.</p>
         </div>
@@ -2328,28 +2495,32 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
       <div class="mobile-apps-grid">
         <div class="mobile-app-card reveal-up">
-          <span class="service-icon">📱</span>
+          <i class="fa-solid fa-mobile-screen-button mobile-app-card-bg-icon"></i>
+          <span class="service-icon"><i class="fa-solid fa-mobile-screen-button"></i></span>
           <h3>Flutter App Development</h3>
           <p>Native-quality cross-platform apps for iOS and Android with a single codebase using Flutter & Dart.</p>
           <span class="mobile-tech-badge">Flutter • Dart</span>
         </div>
 
         <div class="mobile-app-card reveal-up">
-          <span class="service-icon">🔥</span>
+          <i class="fa-solid fa-fire mobile-app-card-bg-icon"></i>
+          <span class="service-icon"><i class="fa-solid fa-fire"></i></span>
           <h3>Firebase Integration</h3>
           <p>Scalable backend solutions with Firebase — authentication, real-time database, cloud functions, and hosting.</p>
           <span class="mobile-tech-badge">Firebase CLI • Firestore</span>
         </div>
 
         <div class="mobile-app-card reveal-up">
-          <span class="service-icon">🎨</span>
+          <i class="fa-solid fa-palette mobile-app-card-bg-icon"></i>
+          <span class="service-icon"><i class="fa-solid fa-palette"></i></span>
           <h3>Mobile UI/UX Design</h3>
           <p>Beautiful, intuitive mobile interfaces designed for engagement, accessibility, and platform-native feel.</p>
           <span class="mobile-tech-badge">Figma • Material Design</span>
         </div>
 
         <div class="mobile-app-card reveal-up">
-          <span class="service-icon">🚀</span>
+          <i class="fa-solid fa-rocket mobile-app-card-bg-icon"></i>
+          <span class="service-icon"><i class="fa-solid fa-rocket"></i></span>
           <h3>App Deployment</h3>
           <p>End-to-end app store deployment for Google Play and Apple App Store with CI/CD pipelines.</p>
           <span class="mobile-tech-badge">Play Store • App Store</span>
@@ -2369,7 +2540,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
       <div class="testi-track" id="testiTrack">
 
         <div class="testi-card">
-          <p class="testi-quote">"Daud turned a stiff set of brand guidelines into something that felt like a film. Our launch page outperformed every benchmark we set."</p>
+          <p class="testi-quote"><i class="fa-solid fa-quote-left"></i>Daud turned a stiff set of brand guidelines into something that felt like a film. Our launch page outperformed every benchmark we set.</p>
           <div class="testi-author">
             <span class="testi-name">Elena Marsh</span>
             <span class="testi-role">Founder, Solace</span>
@@ -2377,7 +2548,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
         </div>
 
         <div class="testi-card">
-          <p class="testi-quote">"The attention to detail on animation timing alone justified the project. Every scroll interaction feels intentional."</p>
+          <p class="testi-quote"><i class="fa-solid fa-quote-left"></i>The attention to detail on animation timing alone justified the project. Every scroll interaction feels intentional.</p>
           <div class="testi-author">
             <span class="testi-name">Daniel Ochoa</span>
             <span class="testi-role">Creative Director, Northlight</span>
@@ -2385,7 +2556,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
         </div>
 
         <div class="testi-card">
-          <p class="testi-quote">"We handed him a rough brief and got back a site our whole board asked about. Rare to find code and craft in the same person."</p>
+          <p class="testi-quote"><i class="fa-solid fa-quote-left"></i>We handed him a rough brief and got back a site our whole board asked about. Rare to find code and craft in the same person.</p>
           <div class="testi-author">
             <span class="testi-name">Priya Nandakumar</span>
             <span class="testi-role">CEO, Nimbus Analytics</span>
@@ -2393,7 +2564,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
         </div>
 
         <div class="testi-card">
-          <p class="testi-quote">"Fast, communicative, and obsessive about performance. The site loads instantly despite how cinematic it feels."</p>
+          <p class="testi-quote"><i class="fa-solid fa-quote-left"></i>Fast, communicative, and obsessive about performance. The site loads instantly despite how cinematic it feels.</p>
           <div class="testi-author">
             <span class="testi-name">Marcus Webb</span>
             <span class="testi-role">Director, Kindling Foundation</span>
@@ -2404,8 +2575,8 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
     </div>
 
     <div class="testi-controls">
-      <button class="testi-btn" id="testiPrev" aria-label="Previous testimonial" data-magnetic>←</button>
-      <button class="testi-btn" id="testiNext" aria-label="Next testimonial" data-magnetic>→</button>
+      <button class="testi-btn" id="testiPrev" aria-label="Previous testimonial" data-magnetic><i class="fa-solid fa-arrow-left"></i></button>
+      <button class="testi-btn" id="testiNext" aria-label="Next testimonial" data-magnetic><i class="fa-solid fa-arrow-right"></i></button>
     </div>
   </section>
 
@@ -2421,24 +2592,33 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
 
           <div class="contact-info reveal-up">
             <a href="mailto:hello@daudimran.dev" class="contact-info-item" data-magnetic>
-              <span class="contact-info-label">Email</span>
-              <span class="contact-info-value">hello@daudimran.dev</span>
+              <span class="contact-info-icon"><i class="fa-solid fa-envelope"></i></span>
+              <span class="contact-info-text">
+                <span class="contact-info-label">Email</span>
+                <span class="contact-info-value">hello@daudimran.dev</span>
+              </span>
             </a>
             <a href="tel:+15551234567" class="contact-info-item" data-magnetic>
-              <span class="contact-info-label">Phone</span>
-              <span class="contact-info-value">+1 (555) 123-4567</span>
+              <span class="contact-info-icon"><i class="fa-solid fa-phone"></i></span>
+              <span class="contact-info-text">
+                <span class="contact-info-label">Phone</span>
+                <span class="contact-info-value">+1 (555) 123-4567</span>
+              </span>
             </a>
             <div class="contact-info-item">
-              <span class="contact-info-label">Location</span>
-              <span class="contact-info-value">Austin, Texas — Remote Worldwide</span>
+              <span class="contact-info-icon"><i class="fa-solid fa-location-dot"></i></span>
+              <span class="contact-info-text">
+                <span class="contact-info-label">Location</span>
+                <span class="contact-info-value">Austin, Texas — Remote Worldwide</span>
+              </span>
             </div>
           </div>
 
           <div class="social-icons reveal-up">
-            <a href="#" aria-label="GitHub" data-magnetic>GH</a>
-            <a href="#" aria-label="LinkedIn" data-magnetic>LI</a>
-            <a href="#" aria-label="Dribbble" data-magnetic>DR</a>
-            <a href="#" aria-label="X / Twitter" data-magnetic>X</a>
+            <a href="#" aria-label="GitHub" data-magnetic><i class="fa-brands fa-github"></i></a>
+            <a href="#" aria-label="LinkedIn" data-magnetic><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" aria-label="Dribbble" data-magnetic><i class="fa-brands fa-dribbble"></i></a>
+            <a href="#" aria-label="X / Twitter" data-magnetic><i class="fa-brands fa-x-twitter"></i></a>
           </div>
         </div>
 
@@ -2463,7 +2643,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
               <label for="fMessage">Tell me about your project</label>
             </div>
             <button type="submit" class="btn-forge btn-forge-fill" data-magnetic>
-              <span>Send Message</span>
+              <span><i class="fa-solid fa-paper-plane"></i>Send Message</span>
             </button>
             <p class="form-note" id="formNote" aria-live="polite"></p>
           </form>
@@ -2497,18 +2677,18 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
     </div>
 
     <div class="footer-social">
-      <a href="#" aria-label="GitHub" data-magnetic>GH</a>
-      <a href="#" aria-label="LinkedIn" data-magnetic>LI</a>
-      <a href="#" aria-label="Dribbble" data-magnetic>DR</a>
-      <a href="#" aria-label="X / Twitter" data-magnetic>X</a>
-      <a href="#" aria-label="YouTube" data-magnetic>YT</a>
+      <a href="#" aria-label="GitHub" data-magnetic><i class="fa-brands fa-github"></i></a>
+      <a href="#" aria-label="LinkedIn" data-magnetic><i class="fa-brands fa-linkedin-in"></i></a>
+      <a href="#" aria-label="Dribbble" data-magnetic><i class="fa-brands fa-dribbble"></i></a>
+      <a href="#" aria-label="X / Twitter" data-magnetic><i class="fa-brands fa-x-twitter"></i></a>
+      <a href="#" aria-label="YouTube" data-magnetic><i class="fa-brands fa-youtube"></i></a>
     </div>
 
     <div class="footer-app-badge">
-      <span>✦</span> Flutter · Dart · Firebase CLI <span>✦</span>
+      <i class="fa-solid fa-star"></i> Flutter · Dart · Firebase CLI <i class="fa-solid fa-star"></i>
     </div>
 
-    <p class="footer-copy">© <span id="footerYear"></span> Daud Imran. All rights reserved. Built with <span>❤</span> and <span>☕</span></p>
+    <p class="footer-copy">© <span id="footerYear"></span> Daud Imran. All rights reserved. Built with <i class="fa-solid fa-heart"></i> and <i class="fa-solid fa-mug-hot"></i></p>
   </div>
 </footer>
 
@@ -2530,7 +2710,8 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------------------------------------------------------
-     THEME TOGGLE - FIXED to work on entire page
+     THEME TOGGLE - applies data-theme to <html> so every
+     component themed off CSS variables updates together.
   --------------------------------------------------------- */
   function initTheme() {
     const toggle = document.getElementById('themeToggle');
@@ -2562,10 +2743,10 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
   
   function updateThemeUI(theme, icon, label) {
     if (theme === 'dark') {
-      icon.textContent = '🌙';
+      icon.className = 'icon fa-solid fa-moon';
       label.textContent = 'Dark';
     } else {
-      icon.textContent = '☀️';
+      icon.className = 'icon fa-solid fa-sun';
       label.textContent = 'Light';
     }
   }
@@ -2690,6 +2871,9 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
     return el.querySelectorAll('.char');
   }
 
+  /* ---------------------------------------------------------
+     HERO ENTRANCE (page-load sequence)
+  --------------------------------------------------------- */
   function runHeroEntrance() {
     const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
@@ -2713,17 +2897,143 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
     tl.from('.hero-eyebrow span', { yPercent: 100, opacity: 0, duration: 0.8 }, '-=1.2')
       .from('.hero-sub span', { yPercent: 100, opacity: 0, duration: 0.8 }, '-=0.9')
       .from('.hero-actions .btn-forge', { y: 24, opacity: 0, duration: 0.7, stagger: 0.12 }, '-=0.6')
-      .from('.scroll-indicator', { opacity: 0, y: 10, duration: 0.8 }, '-=0.4')
-      .from('.hero-float', { opacity: 0, scale: 0.4, duration: 1, stagger: 0.15 }, '-=1');
+      .from('.scroll-indicator', { opacity: 0, y: 10, duration: 0.8 }, '-=0.4');
 
-    gsap.to('.hero-float-1', { y: 24, x: 10, duration: 6, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-    gsap.to('.hero-float-2', { y: -18, x: -8, duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-    gsap.to('.hero-float-3', { y: 14, x: -14, duration: 7, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    // Workbench scene entrance, timed alongside the copy
+    tl.from('#devMonitor', { opacity: 0, y: 46, scale: 0.94, duration: 1, ease: 'power3.out' }, '-=1.1')
+      .to('#devMonitor', { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'power3.out' }, '<')
+      .from('#devLaptop', { opacity: 0, y: 60, x: 30, scale: 0.92, duration: 1 }, '-=0.75')
+      .to('#devLaptop', { opacity: 1, y: 0, x: 0, scale: 1, duration: 1 }, '<')
+      .from('#devMobile', { opacity: 0, y: 40, scale: 0.8, duration: 0.9 }, '-=0.7')
+      .to('#devMobile', { opacity: 1, y: 0, scale: 1, duration: 0.9 }, '<')
+      .to('.tech-float', { opacity: 1, duration: 0.6, stagger: 0.08 }, '-=0.6')
+      .to('#devStatus', { opacity: 1, duration: 0.6 }, '-=0.4')
+      .to('#devStats', { opacity: 1, duration: 0.6 }, '<');
+
+    // Mobile mock chart bars grow in with the scene, echoing theme accent color
+    tl.from('#devMobileChart span', { scaleY: 0, transformOrigin: 'bottom', duration: 0.7, stagger: 0.05, ease: 'power2.out' }, '-=0.5');
 
     gsap.to('.scroll-indicator-line', {
-      backgroundPosition: '0 -46px', repeat: -1, duration: 1.4, ease: 'power2.inOut',
-      onRepeat: function () {}
+      backgroundPosition: '0 -46px', repeat: -1, duration: 1.4, ease: 'power2.inOut'
     });
+
+    if (!prefersReducedMotion) {
+      initDevSceneAmbient();
+      initHeroParallax();
+    }
+    initHeroScrollStory();
+  }
+
+  /* ---------------------------------------------------------
+     DEV WORKBENCH — ambient idle motion (badges float, cursor
+     blinks, status pulses) once the scene has entered.
+  --------------------------------------------------------- */
+  function initDevSceneAmbient() {
+    gsap.to('.tf-html', { y: -10, duration: 3.4, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('.tf-css', { y: 12, duration: 4.1, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('.tf-bootstrap', { y: -8, duration: 3.7, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.3 });
+    gsap.to('.tf-js', { y: 10, duration: 3.2, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.5 });
+    gsap.to('.tf-gsap', { y: -12, duration: 4.4, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.2 });
+    gsap.to('.tf-three', { y: 9, duration: 3.9, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.6 });
+    gsap.to('.tf-php', { y: -9, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.1 });
+    gsap.to('#devMonitor, #devLaptop, #devMobile', { y: '+=6', duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut', stagger: 0.4 });
+    gsap.to('.dev-mobile-stat-card i', { scale: 1.15, duration: 1.1, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+  }
+
+  /* ---------------------------------------------------------
+     DEV WORKBENCH — subtle mouse parallax across scene layers
+  --------------------------------------------------------- */
+  function initHeroParallax() {
+    const scene = document.getElementById('devScene');
+    if (!scene || window.matchMedia('(max-width: 992px)').matches) return;
+
+    const xTo = {};
+    const yTo = {};
+    const layers = [
+      { sel: '#devMonitor', strength: 10 },
+      { sel: '#devLaptop', strength: 16 },
+      { sel: '#devMobile', strength: 22 },
+      { sel: '.tech-float', strength: 26 }
+    ];
+    layers.forEach((l) => {
+      xTo[l.sel] = gsap.quickTo(l.sel, 'x', { duration: 0.7, ease: 'power3.out' });
+      yTo[l.sel] = gsap.quickTo(l.sel, 'y', { duration: 0.7, ease: 'power3.out' });
+    });
+
+    document.getElementById('heroVisual').addEventListener('mousemove', (e) => {
+      const rect = scene.getBoundingClientRect();
+      const relX = (e.clientX - rect.left - rect.width / 2) / rect.width;
+      const relY = (e.clientY - rect.top - rect.height / 2) / rect.height;
+      layers.forEach((l) => {
+        xTo[l.sel](relX * l.strength);
+        yTo[l.sel](relY * l.strength);
+      });
+    });
+    document.getElementById('heroVisual').addEventListener('mouseleave', () => {
+      layers.forEach((l) => { xTo[l.sel](0); yTo[l.sel](0); });
+    });
+  }
+
+  /* ---------------------------------------------------------
+     HERO SCROLL STORY — pinned, 4-stage cinematic timeline
+     Stage 1 (0–20%):  camera zooms in, lighting increases, copy lifts
+     Stage 2 (20–45%): workbench powers on, code + browser + mobile arrive
+     Stage 3 (45–70%): code "compiles", browser renders, connections glow
+     Stage 4 (70–100%): scene dissolves forward into Featured Projects
+  --------------------------------------------------------- */
+  function initHeroScrollStory() {
+    const pinWrap = document.getElementById('heroPinWrap');
+    if (!pinWrap) return;
+
+    if (prefersReducedMotion) {
+      gsap.set(['#devMonitor', '#devLaptop', '#devMobile', '.tech-float', '#devStatus', '#devStats'], { opacity: 1, x: 0, y: 0, scale: 1 });
+      gsap.set('.dev-render-block', { scaleX: 1 });
+      gsap.set('.dev-code-line .code', { opacity: 1, x: 0 });
+      gsap.set('#devMobileChart span', { scaleY: 1 });
+      return;
+    }
+
+    const codeLines = gsap.utils.toArray('#devCodeBody .code');
+    const renderBlocks = gsap.utils.toArray('.dev-browser-body .dev-render-block, .dev-mobile .dev-render-block');
+    const connections = gsap.utils.toArray('.dev-connections path');
+    const mobileChartBars = gsap.utils.toArray('#devMobileChart span');
+
+    const story = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.hero',
+        start: 'top top',
+        end: '+=280%',
+        scrub: 1,
+        pin: pinWrap,
+        anticipatePin: 1
+      }
+    });
+
+    // Stage 1 — camera settles in, lighting rises, copy lifts slightly
+    story.to('#heroBg .hero-bg-gradient', { opacity: 1.4, duration: 1 }, 0)
+      .to('#heroGlow', { opacity: 0.95, scale: 1.15, duration: 1 }, 0)
+      .to('#devScene', { scale: 1.05, duration: 1, ease: 'none' }, 0)
+      .to('#heroContent', { y: -18, duration: 1 }, 0)
+      .to('.hero-sub', { opacity: 0.55, duration: 1 }, 0);
+
+    // Stage 2 — the workbench activates: monitor, browser, mobile, labels
+    story.to('#devMonitor', { boxShadow: '0 30px 70px rgba(0,0,0,0.55), 0 0 60px rgba(232,72,15,0.25)', duration: 1 }, 1)
+      .to('.tech-float', { opacity: 1, y: 0, stagger: 0.05, duration: 1 }, 1.1)
+      .to(codeLines, { opacity: 1, x: 0, stagger: 0.08, duration: 1 }, 1.2);
+
+    // Stage 3 — code compiles, browser + mobile render, connections glow alive,
+    // mobile chart bars pulse the rust accent color in sync with the theme
+    story.to('#devCompileStrip', { opacity: 1, duration: 0.6 }, 2.2)
+      .to(renderBlocks, { scaleX: 1, stagger: 0.06, duration: 1, ease: 'power2.out' }, 2.3)
+      .to(mobileChartBars, { scaleY: 1, transformOrigin: 'bottom', stagger: 0.04, duration: 0.8, ease: 'power2.out' }, 2.35)
+      .to(connections, { opacity: 0.9, strokeDasharray: '500 0', duration: 1, stagger: 0.15 }, 2.4)
+      .to('#devMonitor, #devLaptop, #devMobile', { filter: 'brightness(1.08)', duration: 0.8, yoyo: true, repeat: 1 }, 2.5);
+
+    // Stage 4 — the scene dissolves forward, handing off to Featured Projects
+    story.to('#devScene', { scale: 0.92, y: -40, opacity: 0.15, duration: 1, ease: 'power2.in' }, 3.4)
+      .to('#heroContent', { opacity: 0.2, y: -60, duration: 1, ease: 'power2.in' }, 3.4)
+      .to('#heroGlow', { opacity: 0, scale: 1.4, duration: 1 }, 3.4)
+      .to('.scroll-indicator', { opacity: 0, duration: 0.6 }, 3.4);
   }
 
   /* ---------------------------------------------------------
@@ -2887,7 +3197,7 @@ a.contact-info-item:hover .contact-info-value{ color: var(--rust-bright); }
     if (!form) return;
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      note.textContent = "Thanks — your message is ready. Connect a backend or form service to deliver it.";
+      note.innerHTML = '<i class="fa-solid fa-circle-check"></i> Thanks — your message is ready. Connect a backend or form service to deliver it.';
       gsap.fromTo(note, { opacity: 0 }, { opacity: 1, duration: 0.5 });
     });
   }
