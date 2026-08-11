@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -285,7 +284,6 @@
     @media (max-width: 576px){ .hero-visual{ min-height: 300px; } .dev-scene{ max-width: 320px; } .dev-monitor-body{ font-size: 0.6rem; } .tech-float{ display:none; } }
 
     /* ABOUT, SKILLS, WORK, EXPERIENCE, SERVICES, MOBILE-APPS, TESTIMONIALS, CONTACT, FOOTER */
-    /* (all styles from original are preserved in the full code) */
     .about{ background: var(--ink); }
     .about-visual{ position:relative; display:flex; justify-content:center; }
     .about-visual-frame{ position:relative; width: min(100%, 380px); aspect-ratio: 4/5; border-radius: 26px; background: linear-gradient(160deg, var(--ink-3), var(--ink-2)); border: 1px solid var(--glass-border); overflow:hidden; display:flex; align-items:flex-end; transition: background 0.5s ease, border-color 0.5s ease; }
@@ -449,6 +447,20 @@
     @media (max-width: 576px){ :root{ --section-pad: 96px; --container-pad: 20px; } .hero-pin-wrap{ padding-top: 100px; min-height: auto; } .hero-title{ font-size: clamp(2.8rem, 15vw, 4.4rem); } .hero-sub{ font-size: 0.98rem; } .hero-actions{ flex-direction: column; width: 100%; } .hero-actions .btn-forge{ width: 100%; } .section-title{ font-size: clamp(1.7rem, 8vw, 2.2rem); } .about-visual-frame{ aspect-ratio: 3/4; } .plate-num{ font-size: 3.2rem; } .skills-grid{ grid-template-columns: 1fr; gap: 22px; } .work-item{ padding: 50px 0; } .timeline{ padding-left: 30px; } .timeline-dot{ left: -30px; } .testi-card{ padding: 28px; flex-basis: 88vw; } .form-row{ grid-template-columns: 1fr; } .footer-links{ gap: 16px; } .nav-links{ gap: 30px; } }
     @media (min-width: 1300px) and (max-width: 1468px){ :root{ --container-pad: 56px; } .hero-title{ font-size: clamp(3.4rem, 11vw, 8rem); } .services-grid{ grid-template-columns: repeat(3, 1fr); } .mobile-apps-grid{ grid-template-columns: repeat(3, 1fr); } .skills-grid{ grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 992px){ .about-row{ text-align: left; } }
+
+    /* 3D tilt cards — preserve-3d and perspective */
+    .work-item, .mobile-app-card, .service-card, .milestone-card {
+      transform-style: preserve-3d;
+      perspective: 800px;
+      will-change: transform;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .work-item .work-item-media, .mobile-app-card .service-icon, .service-card .service-icon {
+      transform-style: preserve-3d;
+    }
+    .work-item .work-item-body, .mobile-app-card h3, .mobile-app-card p, .service-card h3, .service-card p {
+      transform-style: preserve-3d;
+    }
   </style>
 </head>
 <body>
@@ -762,10 +774,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<!-- GSAP Draggable for testimonials -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
 <script>
   (function () {
     'use strict';
-    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger, Draggable);
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // THEME TOGGLE
@@ -1020,13 +1034,142 @@
     // TIMELINE
     function initTimeline() { const fill = document.getElementById('timelineFill'); const timeline = document.querySelector('.timeline'); if (!fill || !timeline) return; gsap.to(fill, { height: '100%', ease: 'none', scrollTrigger: { trigger: timeline, start: 'top 70%', end: 'bottom 80%', scrub: true } }); }
 
-    // TESTIMONIALS
-    function initTestimonials() {
-      const track = document.getElementById('testiTrack'); const prev = document.getElementById('testiPrev'); const next = document.getElementById('testiNext'); if (!track) return;
-      const cards = track.querySelectorAll('.testi-card'); let index = 0;
-      function cardWidth() { return cards[0].getBoundingClientRect().width + 26; }
-      function goTo(i) { index = Math.max(0, Math.min(i, cards.length-1)); gsap.to(track, { x: -index*cardWidth(), duration: 0.7, ease: 'power3.out' }); }
-      next.addEventListener('click', () => goTo(index+1)); prev.addEventListener('click', () => goTo(index-1)); window.addEventListener('resize', () => goTo(index));
+    // =========================================================
+    // 3D TILT on project cards & mobile-app cards
+    // =========================================================
+    function init3DTilt() {
+      const cards = document.querySelectorAll('.work-item, .mobile-app-card, .service-card, .milestone-card');
+      if (!cards.length || window.matchMedia('(max-width: 900px)').matches) return;
+
+      cards.forEach(card => {
+        const rotateX = gsap.quickTo(card, 'rotationX', { duration: 0.6, ease: 'power2.out' });
+        const rotateY = gsap.quickTo(card, 'rotationY', { duration: 0.6, ease: 'power2.out' });
+
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const maxRotate = 12; // max tilt in degrees
+          const rotY = ((x - centerX) / centerX) * maxRotate;
+          const rotX = -((y - centerY) / centerY) * maxRotate;
+          rotateX(rotX);
+          rotateY(rotY);
+        });
+
+        card.addEventListener('mouseleave', () => {
+          rotateX(0);
+          rotateY(0);
+        });
+      });
+    }
+
+    // =========================================================
+    // DRAGGABLE + INERTIA for testimonials
+    // =========================================================
+    function initDraggableTestimonials() {
+      const track = document.getElementById('testiTrack');
+      const prev = document.getElementById('testiPrev');
+      const next = document.getElementById('testiNext');
+      if (!track) return;
+
+      const cards = track.querySelectorAll('.testi-card');
+      if (!cards.length) return;
+
+      let currentIndex = 0;
+      let draggableInstance = null;
+      let isDragging = false;
+
+      function getCardWidth() {
+        return cards[0].getBoundingClientRect().width + 26; // gap
+      }
+
+      function getMaxX() {
+        const totalWidth = cards.length * getCardWidth();
+        const containerWidth = track.parentElement.getBoundingClientRect().width;
+        return Math.max(0, totalWidth - containerWidth);
+      }
+
+      function snapToIndex(index) {
+        currentIndex = Math.max(0, Math.min(index, cards.length - 1));
+        const x = -currentIndex * getCardWidth();
+        gsap.to(track, {
+          x: x,
+          duration: 0.6,
+          ease: 'power3.out',
+          overwrite: 'auto'
+        });
+        // update buttons disabled state
+        if (prev) prev.style.opacity = currentIndex === 0 ? '0.3' : '1';
+        if (next) next.style.opacity = currentIndex >= cards.length - 1 ? '0.3' : '1';
+      }
+
+      // Create Draggable instance
+      draggableInstance = Draggable.create(track, {
+        type: 'x',
+        inertia: true,
+        bounds: {
+          minX: -getMaxX(),
+          maxX: 0
+        },
+        edgeResistance: 0.7,
+        throwResistance: 0.8,
+        onDragStart: () => {
+          isDragging = true;
+        },
+        onDragEnd: () => {
+          isDragging = false;
+          // snap to nearest card
+          const currentX = parseFloat(gsap.getProperty(track, 'x')) || 0;
+          const cardW = getCardWidth();
+          const nearest = Math.round(Math.abs(currentX) / cardW);
+          snapToIndex(nearest);
+        },
+        onThrowUpdate: () => {
+          // during throw, update index hint
+        },
+        onThrowComplete: () => {
+          const currentX = parseFloat(gsap.getProperty(track, 'x')) || 0;
+          const cardW = getCardWidth();
+          const nearest = Math.round(Math.abs(currentX) / cardW);
+          snapToIndex(nearest);
+        }
+      });
+
+      // If Draggable returns array, grab first
+      if (Array.isArray(draggableInstance)) {
+        draggableInstance = draggableInstance[0];
+      }
+
+      // Button controls
+      if (prev) {
+        prev.addEventListener('click', () => {
+          if (isDragging) return;
+          snapToIndex(currentIndex - 1);
+        });
+      }
+      if (next) {
+        next.addEventListener('click', () => {
+          if (isDragging) return;
+          snapToIndex(currentIndex + 1);
+        });
+      }
+
+      // Recalculate bounds on resize
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (draggableInstance) {
+            draggableInstance.applyBounds({ minX: -getMaxX(), maxX: 0 });
+          }
+          snapToIndex(currentIndex);
+        }, 200);
+      });
+
+      // initial snap
+      snapToIndex(0);
     }
 
     // CONTACT FORM
@@ -1038,7 +1181,7 @@
     // INIT
     document.addEventListener('DOMContentLoaded', () => {
       initTheme();
-      initElevenLabsVoice();   // ElevenLabs voice integration
+      initElevenLabsVoice();
       initPreloader();
       initCursor();
       initMagnetic();
@@ -1048,10 +1191,30 @@
       initSkills();
       initCounters();
       initTimeline();
-      initTestimonials();
+      initTestimonials(); // original testimonial buttons (fallback)
+      initDraggableTestimonials(); // new draggable + inertia
+      init3DTilt(); // 3D tilt on cards
       initContactForm();
       initFooterYear();
     });
+
+    // Keep original initTestimonials for button fallback, but we override with draggable
+    // We'll rename to avoid conflict
+    const origInitTestimonials = function() {
+      const track = document.getElementById('testiTrack');
+      const prev = document.getElementById('testiPrev');
+      const next = document.getElementById('testiNext');
+      if (!track) return;
+      const cards = track.querySelectorAll('.testi-card');
+      let index = 0;
+      function cardWidth() { return cards[0].getBoundingClientRect().width + 26; }
+      function goTo(i) { index = Math.max(0, Math.min(i, cards.length-1)); gsap.to(track, { x: -index*cardWidth(), duration: 0.7, ease: 'power3.out' }); }
+      if (next) next.addEventListener('click', () => goTo(index+1));
+      if (prev) prev.addEventListener('click', () => goTo(index-1));
+      window.addEventListener('resize', () => goTo(index));
+    };
+    // Override: we use draggable version, but keep buttons functional via draggable
+    window.initTestimonials = origInitTestimonials;
   })();
 </script>
 </body>
