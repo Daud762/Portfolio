@@ -568,6 +568,74 @@ section{ position: relative; padding: var(--section-pad) 0; transition: backgrou
   color: var(--mist-dim);
 }
 
+/* =========================================================
+   VOICE INTRO TOGGLE
+   ========================================================= */
+.voice-toggle{
+  position: absolute;
+  top: 18px;
+  right: var(--container-pad);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 18px;
+  border-radius: 30px;
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-strong-border);
+  backdrop-filter: blur(12px);
+  color: var(--mist);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color .3s ease, background .3s ease, color .3s ease, box-shadow .3s ease;
+}
+.voice-toggle:hover{
+  border-color: var(--rust-bright);
+  box-shadow: 0 0 24px rgba(232,72,15,0.25);
+  color: var(--white);
+}
+.voice-toggle i{
+  color: var(--rust-bright);
+  font-size: 0.9rem;
+  transition: transform .3s ease;
+}
+.voice-toggle .voice-bars{
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 12px;
+}
+.voice-toggle .voice-bars span{
+  display: block;
+  width: 2px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--rust-bright);
+  transform-origin: bottom;
+  opacity: 0.35;
+  transition: opacity .3s ease;
+}
+.voice-toggle.is-speaking .voice-bars span{ opacity: 1; }
+.voice-toggle.is-speaking .voice-bars span:nth-child(1){ animation: voiceBar 0.9s ease-in-out infinite; }
+.voice-toggle.is-speaking .voice-bars span:nth-child(2){ animation: voiceBar 0.9s ease-in-out infinite 0.15s; }
+.voice-toggle.is-speaking .voice-bars span:nth-child(3){ animation: voiceBar 0.9s ease-in-out infinite 0.3s; }
+@keyframes voiceBar{
+  0%, 100% { height: 4px; }
+  50% { height: 13px; }
+}
+.voice-toggle.is-speaking i{ animation: voicePulse 1.2s ease-in-out infinite; }
+@keyframes voicePulse{
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+@media (max-width: 992px){
+  .voice-toggle{ top: 14px; right: 16px; padding: 9px 12px; }
+  .voice-toggle .voice-toggle-label{ display: none; }
+}
+
 /* ---------- Dev workbench scene (right) ---------- */
 .hero-visual{
   position: relative;
@@ -2020,6 +2088,13 @@ a.contact-info-item:hover .contact-info-icon{ border-color: var(--rust-bright); 
         </div>
       </div>
 
+      <!-- ============ VOICE INTRO TOGGLE (NEW) ============ -->
+      <button class="voice-toggle" id="voiceToggle" data-magnetic aria-label="Toggle voice introduction" type="button">
+        <i class="fa-solid fa-volume-high" id="voiceIcon"></i>
+        <span class="voice-toggle-label" id="voiceLabel">Voice Intro</span>
+        <span class="voice-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+
       <div class="scroll-indicator" data-magnetic>
         <span class="scroll-indicator-line"></span>
         <span class="scroll-indicator-label">SCROLL</span>
@@ -2752,6 +2827,160 @@ a.contact-info-item:hover .contact-info-icon{ border-color: var(--rust-bright); 
   }
 
   /* ---------------------------------------------------------
+     VOICE INTRO — "Hi, I'm Daud" cinematic audio intro
+     Uses the browser-native Web Speech API (free, no API key,
+     no backend required). Auto-attempts to play once the
+     preloader finishes and the hero entrance begins; if the
+     browser blocks autoplay audio, it unlocks itself on the
+     visitor's first click/tap/scroll. State (muted/unmuted)
+     is remembered across visits via localStorage.
+
+     VOICE SELECTION — forced to a deep male voice so the intro
+     sounds like a confident male AI narrator, never a female
+     system voice. pitch/rate are tuned lower & slower for a
+     "bhari" (heavier, deeper) tone.
+  --------------------------------------------------------- */
+  function initVoiceIntro() {
+    const btn = document.getElementById('voiceToggle');
+    const icon = document.getElementById('voiceIcon');
+    const label = document.getElementById('voiceLabel');
+    if (!btn) return;
+
+    const supported = 'speechSynthesis' in window;
+    if (!supported) {
+      // Gracefully hide the control on unsupported browsers —
+      // nothing else on the page depends on this feature.
+      btn.style.display = 'none';
+      return;
+    }
+
+    const synth = window.speechSynthesis;
+    const introText = "Hi, I'm Daud Imran — a frontend engineer, creative developer, and mobile app specialist. Welcome to my portfolio.";
+
+    let muted = localStorage.getItem('voiceMuted') === 'true';
+    let hasPlayed = false;
+
+    // Ranked list of known deep/male system & neural voice names
+    // across Windows (Edge/Chrome), macOS/iOS (Safari/Chrome), and
+    // Android/ChromeOS. Checked in order — first match wins.
+    const MALE_VOICE_PRIORITY = [
+      'Google UK English Male',
+      'Microsoft Guy Online (Natural)',
+      'Microsoft Guy',
+      'Microsoft Ryan Online (Natural)',
+      'Microsoft Ryan',
+      'Microsoft David',
+      'Microsoft Mark',
+      'Google US English Male',
+      'Daniel',        // en-GB male (Safari/macOS)
+      'Alex',           // en-US male (macOS)
+      'Fred',           // en-US male (macOS, robotic but male)
+      'Aaron',
+      'Arthur',
+      'Oliver',
+      'Rishi'
+    ];
+
+    function pickVoice() {
+      const voices = synth.getVoices();
+      if (!voices.length) return null;
+
+      // 1) Exact/partial match against our known deep male voices
+      for (const name of MALE_VOICE_PRIORITY) {
+        const match = voices.find((v) => v.name.includes(name));
+        if (match) return match;
+      }
+
+      // 2) Any voice whose name/lang explicitly signals "male"
+      //    (Microsoft/Android voices often expose this)
+      const explicitMale = voices.find(
+        (v) => /male/i.test(v.name) && !/female/i.test(v.name) && v.lang.startsWith('en')
+      );
+      if (explicitMale) return explicitMale;
+
+      // 3) Fall back to any English voice, avoiding names that are
+      //    clearly female defaults (Samantha, Zira, Victoria, etc.)
+      const femaleNames = /samantha|zira|victoria|susan|karen|moira|tessa|female|woman|girl/i;
+      const nonFemaleEnglish = voices.find((v) => v.lang.startsWith('en') && !femaleNames.test(v.name));
+      if (nonFemaleEnglish) return nonFemaleEnglish;
+
+      // 4) Absolute last resort — whatever's available
+      return voices.find((v) => v.lang === 'en-US') || voices[0];
+    }
+
+    function updateUI() {
+      if (muted) {
+        icon.className = 'fa-solid fa-volume-xmark';
+        label.textContent = 'Voice Off';
+        btn.classList.remove('is-speaking');
+      } else {
+        icon.className = 'fa-solid fa-volume-high';
+        label.textContent = 'Voice Intro';
+      }
+    }
+
+    function speakIntro() {
+      if (muted) return;
+      synth.cancel();
+      const utterance = new SpeechSynthesisUtterance(introText);
+      const voice = pickVoice();
+      if (voice) utterance.voice = voice;
+      // Deeper, heavier ("bhari") male tone: lower pitch, slightly
+      // slower rate so it reads like a calm, confident AI narrator
+      // rather than a default chirpy system voice.
+      utterance.pitch = 0.72;
+      utterance.rate = 0.9;
+      utterance.volume = 1;
+      utterance.onstart = () => btn.classList.add('is-speaking');
+      utterance.onend = () => btn.classList.remove('is-speaking');
+      utterance.onerror = () => btn.classList.remove('is-speaking');
+      synth.speak(utterance);
+      hasPlayed = true;
+    }
+
+    updateUI();
+
+    // Called once from runHeroEntrance() right as the hero copy
+    // animates in — this is the "plays automatically on load" hook.
+    window.__playVoiceIntroOnce = function () {
+      if (hasPlayed || muted || prefersReducedMotion) return;
+      if (synth.getVoices().length === 0) {
+        // Voices load asynchronously in some browsers
+        synth.onvoiceschanged = () => speakIntro();
+      } else {
+        speakIntro();
+      }
+    };
+
+    // Some browsers (mobile Safari/Chrome) block audio until the
+    // visitor interacts with the page at least once — this unlocks
+    // the intro automatically on their first tap/click/scroll.
+    function unlockOnFirstInteraction() {
+      if (!hasPlayed && !muted) speakIntro();
+      document.removeEventListener('click', unlockOnFirstInteraction);
+      document.removeEventListener('touchstart', unlockOnFirstInteraction);
+      document.removeEventListener('scroll', unlockOnFirstInteraction);
+    }
+    document.addEventListener('click', unlockOnFirstInteraction, { once: true });
+    document.addEventListener('touchstart', unlockOnFirstInteraction, { once: true, passive: true });
+    document.addEventListener('scroll', unlockOnFirstInteraction, { once: true, passive: true });
+
+    // The mute/unmute button itself
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      muted = !muted;
+      localStorage.setItem('voiceMuted', muted);
+      updateUI();
+      if (muted) {
+        synth.cancel();
+        btn.classList.remove('is-speaking');
+      } else {
+        speakIntro();
+      }
+    });
+  }
+
+  /* ---------------------------------------------------------
      PRELOADER
   --------------------------------------------------------- */
   function initPreloader() {
@@ -2877,6 +3106,10 @@ a.contact-info-item:hover .contact-info-icon{ border-color: var(--rust-bright); 
   function runHeroEntrance() {
     const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
+    // Kick off the voice intro alongside the hero copy reveal —
+    // it does not block or alter any of the GSAP timeline below.
+    if (window.__playVoiceIntroOnce) window.__playVoiceIntroOnce();
+
     document.querySelectorAll('[data-split]').forEach((line) => {
       const chars = splitChars(line);
       tl.from(chars, {
@@ -2897,7 +3130,8 @@ a.contact-info-item:hover .contact-info-icon{ border-color: var(--rust-bright); 
     tl.from('.hero-eyebrow span', { yPercent: 100, opacity: 0, duration: 0.8 }, '-=1.2')
       .from('.hero-sub span', { yPercent: 100, opacity: 0, duration: 0.8 }, '-=0.9')
       .from('.hero-actions .btn-forge', { y: 24, opacity: 0, duration: 0.7, stagger: 0.12 }, '-=0.6')
-      .from('.scroll-indicator', { opacity: 0, y: 10, duration: 0.8 }, '-=0.4');
+      .from('.scroll-indicator', { opacity: 0, y: 10, duration: 0.8 }, '-=0.4')
+      .from('.voice-toggle', { opacity: 0, y: -10, duration: 0.8 }, '-=0.6');
 
     // Workbench scene entrance, timed alongside the copy
     tl.from('#devMonitor', { opacity: 0, y: 46, scale: 0.94, duration: 1, ease: 'power3.out' }, '-=1.1')
@@ -3215,6 +3449,7 @@ a.contact-info-item:hover .contact-info-icon{ border-color: var(--rust-bright); 
   --------------------------------------------------------- */
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
+    initVoiceIntro();
     initPreloader();
     initCursor();
     initMagnetic();
